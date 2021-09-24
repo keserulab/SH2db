@@ -1,0 +1,49 @@
+rms-t megnézni Gáspár script részletének beépítésével
+kimenteni az illesztett szerkezeteket és megnézni pl maestroban
+
+számozás elcsúszás 
+
+új pfam leszűkítése és vissza menni a renumbering-ing részhez --> azokat kellene az új scriptbe betenni
+
+12 db elcsúszott fehérjénél újraszámolni a residue számokat a pfam táblázatban -> javítani (uniproton kézzel javítani)
+---> szerkezet illesztés
+
+
+2ECD pl case studynak és ellenőrizni 
+
+
+CRKL
+0 -> 114
+
+HCK
+122 -> 252
+
+HSH2D
+12 -> 136
+
+SRC
+129 -> 259
+
+STAT3
+562 -> 683
+
+VAV1
+649 -> 771
+
+ZAP70
+N 1 -> 113
+C 148 -> 265
+
+ABL2
+151 -> 274
+
+CHN1
+33 -> 146
+
+CSK
+68 -> 182
+
+SLA2
+79 -> 202
+
+increment = pfam[(pfam['PDB ID']==pdb) & (pfam["Pole"] == pole) & (pfam['PDB chain ID']==chain)]['New_uniprot_stop'].astype(int) - pfam[(pfam['PDB ID']==pdb) & (pfam["Pole"] == pole) & (pfam['PDB chainID']==chain)]['New_PDB_stop'].astype(int)

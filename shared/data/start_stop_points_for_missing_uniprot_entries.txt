@@ -1,0 +1,312 @@
+STA5A_human:
+Gene name: STAT5A
+start: 567
+stop: 720
+
+STAT4_human:
+Gene name: STAT4
+start: 501
+stop: 701
+
+STAT2_human:
+Gene name: STAT2
+start: 550
+stop: 446
+(Ez nagyon nagyon fura, de így van!)
+DEAFGCYYQE K	681
+
+CBLC_HUMAN
+Gene name: CBLC
+start: 214
+stop: 352
+
+CBLB_HUMAN
+Gene name: CBLB
+start: 236
+stop: 374
+
+SH22A_HUMAN
+Gene name: SH2D2A
+start: 72
+stop: 196
+
+SH24A_HUMAN
+Gene name: SH2D4A
+start: 325
+stop: 449
+
+SH24B_HUMAN
+Gene name: SH2D4B
+start: 312
+stop: 420
+
+TYK2_human
+Gene name: TYK2
+start: 432
+stop: 569
+
+jak3_human
+Gene name: JAK3
+start: 353
+stop: 483
+
+JAK1_human
+Gene name: JAK1
+start: 417
+stop: 552
+
+YES_human
+Gene name: YES
+start: 136
+stop: 264
+
+FGR_HUMAN
+Gene name: FGR
+start: 122
+stop: 248
+
+LYN_human
+Gene name: LYN
+start: 107
+stop: 247
+
+BLK_HUMAN
+Gene name: BLK
+start: 102
+stop: 231
+
+FRK_human
+Gene name: FRK
+start: 94
+stop: 219
+
+SLAP1_HUMAN
+Gene name: SLA
+start: 61
+stop: 186
+
+SRMS_HUMAN
+Gene name: SRMS
+start: 98
+stop: 219
+
+SH2D5_HUMAN
+Gene name: SH2D5
+start: 285
+stop: 389
+
+GRAP_human
+Gene name: GRAP
+start: 38
+stop: 161
+
+SHF_HUMAN
+Gene name: SHF
+start: 301
+stop: 423
+
+SHB_HUMAN
+Gene name: SHB
+start: 388
+stop:  509
+
+
+SHD_HUMAN
+Gene name: SHD
+start: 218
+stop: 340
+
+SHE_human
+Gene name: SHE
+start: 387
+stop: 487
+
+RIN3_HUMAN
+Gene name: RIN3
+start: 41
+stop:
+
+RIN2_HUMAN
+Gene name: RIN2
+start: 75
+stop: 201
+
+RIN1_HUMAN
+Gene name: RIN1
+start: 50
+stop: 179
+
+TENS1_HUMAN
+Gene name: TNS1
+start: 1441
+stop: 1579
+
+TENS3_HUMAN
+Gene name: TNS3
+start: 1150
+stop: 1289
+
+TENS4_HUMAN
+Gene name: TNS4
+start: 427
+stop: 567
+
+STAP2_human
+Gene name: STAP2
+start: 130
+stop: 259
+
+SPT6H_HUMAN
+Gene name: SUPT6H
+start: 1311
+stop: 1441
+
+PLCG2_HUMAN
+Gene name:
+NTERM
+start: 510
+stop: 643
+CTERM
+start: 624
+stop:
+
+
+Gene name: SOCS3
+start: 24
+stop: 157
+
+SOCS1_human
+Gene name: SOCS1
+start: 65
+stop: 180
+
+CISH_HUMAN
+Gene name: CISH
+start: 60
+stop: 185
+
+SOCS7_HUMAN
+Gene name: SOCS7
+start: 374
+stop: 506
+
+SOCS5_HUMAN
+Gene name: SOCS5
+start: 359
+stop: 485
+
+DAPP1_human
+Gene name: DAPP1
+start: 13
+stop: 135
+
+P55G_HUMAN
+Gene name: PIK3R3
+NTERM
+start: 43
+stop: 166
+CTERM
+start: 336
+stop: 458
+
+P85B_HUMAN
+Gene name: PIK3R2
+NTERM
+start: 304
+stop: 431
+CTERM
+start: 600
+stop: 722
+
+VAV3_human
+Gene name: VAV3
+start: 650
+stop: 772
+
+VAV_HUMAN
+Gene name: VAV1
+start: 649
+stop: 771
+
+BCAR3_HUMAN
+Gene name: BCAR3
+start: 136
+stop: 260
+
+SH2D3_HUMAN
+Gene name: SH2D3C
+start: 298
+stop: 326
+
+SH23A_HUMAN 
+Gene name: SH2D3A
+start: 1
+stop: 117
+
+SHC4_HUMAN
+Gene name: SHC4
+start: 504
+stop: 623
+
+SHC2_HUMAN
+Gene name: SHC2
+start: 465
+stop: 582
+
+SHC3_HUMAN
+Gene name: SHC3
+start: 481
+stop: 594
+
+SH2B2_HUMAN
+Gene name: SH2B2
+start: 395
+stop: 520
+
+SH2B3_human
+Gene name: SH2B3
+start: 346
+stop: 467
+
+RASA1_human (NTERM)
+Gene name: RASA1 
+start: 159 329
+stop: 282 452
+
+
+PLCG2_HUMAN
+Gene name: 
+NTERM
+start: 510
+stop: 643
+CTERM
+PELLERYNTE
+
+PELL 740 ERYNMERDIN 750
+start: 
+stop: 
+
+CLNK_huma
+Gene name: CLNK 
+start: 287
+stop: 394
+
+LCP2_human
+Gene name: LCP2 
+start: 400
+stop: 532
+
+
+Gene name: BLNK
+start: 328 
+stop: 455
+
+ITK_human
+Gene name: ITK 
+start: 215
+stop: 345
+
+TEC_HUMAN
+Gene name: TEC
+start: 225
+stop: 366

@@ -1,0 +1,8 @@
+important to copy to here the files!! 
+git status
+git add
+git commit -m "message"
+git push
+git status
+
+

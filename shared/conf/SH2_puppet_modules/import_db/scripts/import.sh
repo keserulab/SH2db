@@ -1,0 +1,1 @@
+gunzip -c /protwis/db/protwis.sql.gz | psql -U protwis -h localhost -o protwis
