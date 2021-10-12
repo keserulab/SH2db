@@ -23,7 +23,7 @@ class bootstrap {
   }
 
   exec { "set-locale":
-    command => "bash /protwis/conf/protwis_puppet_modules/bootstrap/scripts/locale.sh",
+    command => "bash /SH2/conf/SH2_puppet_modules/bootstrap/scripts/locale.sh",
     require => Exec["update-package-repo"],
   }
 }

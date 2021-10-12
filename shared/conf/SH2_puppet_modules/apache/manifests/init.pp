@@ -19,8 +19,8 @@ class apache {
         }
         'RedHat': {
             exec { "install-mod_wsgi":
-                cwd => "/protwis",
-                command => "bash /protwis/conf/protwis_puppet_modules/apache/scripts/mod_wsgi.sh",
+                cwd => "/SH2",
+                command => "bash /SH2/conf/SH2_puppet_modules/apache/scripts/mod_wsgi.sh",
                 timeout => 3600,
                 require => [ File["/usr/local/bin/python3"], Package[$apache_main_package, "python34-devel"] ],
             }->
@@ -80,7 +80,7 @@ class apache {
     file { "/etc/$apache_main_package/sites-available/000-default.conf":
         ensure => present,
         recurse => true,
-        source => "/protwis/conf/protwis_puppet_modules/apache/config/virtualhost",
+        source => "/SH2/conf/SH2_puppet_modules/apache/config/virtualhost",
         require => Package[$apache_main_package],
     }
 
@@ -92,15 +92,8 @@ class apache {
         notify => Service[$apache_main_package],
     }
 
-    # generate blast database and collect static files before starting apache
-    exec { "build_blast_db":
-        cwd => "/protwis/sites/protwis",
-        command => "/env/bin/python3 manage.py build_blast_database",
-        environment => ["LC_ALL=en_US.UTF-8"],
-        require => Exec["import-db-dump", "install-psycopg2"],
-    }
     exec { "collect-static":
-        cwd => "/protwis/sites/protwis",
+        cwd => "/SH2/sites/SH2",
         command => "/env/bin/python3 manage.py collectstatic --noinput",
         require => Exec["import-db-dump", "install-psycopg2"],
     }

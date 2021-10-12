@@ -43,11 +43,11 @@ if {$force_conservative} {
 
 
 set timeout -1
-spawn sudo -u postgres createuser -s -P protwis
+spawn sudo -u postgres createuser -s -P SH2
 match_max 100000
 expect -exact "Enter password for new role: "
-send -- "protwis\r"
+send -- "SH2\r"
 expect -exact "\r
 Enter it again: "
-send -- "protwis\r"
+send -- "SH2\r"
 expect eof

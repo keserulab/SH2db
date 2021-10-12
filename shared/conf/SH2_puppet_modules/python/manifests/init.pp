@@ -66,20 +66,9 @@ class python {
     }
 
     $pip_packages = ["ipython", "django", "django-debug-toolbar", "psycopg2-binary", "biopython", "xlrd", "numpy", "PyYAML",
-        "djangorestframework", "django-rest-swagger", "XlsxWriter", "sphinx", "openpyxl", "xmltodict", "pandas",
-	    "django-polymorphic", "mmtf-python", "scipy", "sklearn", "freesasa", "lxml", "reportlab", "svglib"]
+        "djangorestframework", "django-rest-swagger", "XlsxWriter", "sphinx", "openpyxl", "xmltodict", "cython", "pandas",
+	    "django-polymorphic", "mmtf-python", "scipy", "sklearn", "freesasa", "lxml", "reportlab", "svglib", "matplotlib"]
     puppet::install::pip { $pip_packages: }
 
-    # download and install dssp
-    exec { "download-dssp":
-        command => "/usr/bin/wget -q ftp://ftp.cmbi.ru.nl/pub/software/dssp/dssp-2.0.4-linux-amd64 -O /env/bin/dssp",
-        creates => "/env/bin/dssp",
-        require => Exec["create-virtualenv"],
-    }
-
-    file { "/env/bin/dssp":
-        mode => "0755",
-        require => Exec["download-dssp"],
-    }
 
 }

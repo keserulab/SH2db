@@ -43,8 +43,8 @@ if {$force_conservative} {
 
 
 set timeout -1
-spawn sudo -u postgres createdb -U protwis -h localhost protwis
+spawn sudo -u postgres createdb -U SH2 -h localhost SH2
 match_max 100000
 expect -exact "Password: "
-send -- "protwis\r"
+send -- "SH2\r"
 expect eof

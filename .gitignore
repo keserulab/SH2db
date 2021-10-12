@@ -1,2 +1,4 @@
 # Don't track content of these folders
 .vagrant/
+ubuntu-bionic-18.04-cloudimg-console.log
+shared/db/

@@ -5,9 +5,9 @@ Vagrant.configure("2") do |config|
     config.disksize.size = '10GB'
 
     # Forward ports
-    config.vm.network :forwarded_port, guest: 23, host: 2225, id: "ssh"
-    config.vm.network :forwarded_port, guest: 8080, host: 8080
-    config.vm.network :forwarded_port, guest: 81, host: 8081
+    config.vm.network :forwarded_port, guest: 22, host: 2225, id: "ssh"
+    config.vm.network :forwarded_port, guest: 8000, host: 8080
+    config.vm.network :forwarded_port, guest: 80, host: 8081
 
     # Allocate resources
     config.vm.provider :virtualbox do |vb|

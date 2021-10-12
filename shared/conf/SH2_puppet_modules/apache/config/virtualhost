@@ -1,23 +1,23 @@
 <VirtualHost *:80>
-    WSGIDaemonProcess protwis python-path=/protwis/sites/protwis:/env/lib/python3.4/site-packages
-    WSGIProcessGroup protwis
+    WSGIDaemonProcess SH2 python-path=/SH2/sites/SH2:/env/lib/python3.4/site-packages
+    WSGIProcessGroup SH2
 
-    Alias /static/ /protwis/static/protwis/
-    Alias /media/ /protwis/media/protwis/
+    Alias /static/ /SH2/static/SH2/
+    Alias /media/ /SH2/media/SH2/
 
-    <Directory /protwis/static/protwis>
+    <Directory /SH2/static/SH2>
     Require all granted
     </Directory>
 
-    <Directory /protwis/media/protwis>
+    <Directory /SH2/media/SH2>
     Require all granted
     </Directory>
 
-    <Directory /protwis/sites/protwis/protwis>
+    <Directory /SH2/sites/SH2/SH2>
         <Files wsgi.py>
             Require all granted
         </Files>
     </Directory>
 
-    WSGIScriptAlias / /protwis/sites/protwis/protwis/wsgi.py
+    WSGIScriptAlias / /SH2/sites/SH2/SH2/wsgi.py
 </VirtualHost>
