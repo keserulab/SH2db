@@ -15,6 +15,26 @@ class Protein(models.Model):
         db_table = 'protein'
 
 
+class ProteinConformation(models.Model):
+    isoform = models.ForeignKey('Isoform', on_delete=models.CASCADE)
+    state = models.ForeignKey('ProteinState', on_delete=models.CASCADE)
+
+    class Meta():
+        ordering = ('id', )
+        db_table = "protein_conformation"
+
+
+class ProteinState(models.Model):
+    slug = models.SlugField(max_length=20, unique=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.slug
+
+    class Meta():
+        db_table = "protein_state"
+
+
 class Species(models.Model):
     latin_name = models.CharField(max_length=100, unique=True)
     common_name = models.CharField(max_length=100, blank=True)
