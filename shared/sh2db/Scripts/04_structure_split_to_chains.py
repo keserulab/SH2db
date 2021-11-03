@@ -7,7 +7,7 @@ from Bio.PDB import PDBList
 import sys
 import os
 
-table = pd.read_csv('/home/takacsg/Documents/sh2db/data/pfam_table_recalculated_0830.csv')
+table = pd.read_csv('/sh2db_vagrant/SH2db/shared/data/pfam_table_recalculated_0830.csv')
 print(table.head())
 
 print("TABLE READING HAS FINISHED")

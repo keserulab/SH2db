@@ -3,7 +3,7 @@ import sys
 import os
 
 
-table = pd.read_csv('/home/takacsg/Documents/sh2db/data/SH2_domain_containing_prot_struct.csv')
+table = pd.read_csv('/sh2db_vagrant/SH2db/shared/data/SH2_domain_containing_prot_struct.csv')
 print(table.head())
 # https://files.rcsb.org/download/1AB2.pdb
 print("TABLE READING HAS FINISHED")
