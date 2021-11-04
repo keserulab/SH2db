@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy 
 
-table = pd.read_csv('/home/takacsg/Documents/sh2db/data/SH2_domain_containing_prot_new_uniprot_start_stop_filled.csv', engine ='python')
+table = pd.read_csv('/sh2db_vagrant/SH2db/shared/data/SH2_domain_containing_prot_new_uniprot_start_stop_filled.csv', engine ='python')
 #print(table.head())
 
 table["New_uniprot_start"] = table["New_uniprot_start"] + 1

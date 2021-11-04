@@ -7,7 +7,7 @@ from Bio.PDB import PDBList
 import sys
 import os
 
-table = pd.read_csv('/home/takacsg/Documents/sh2db/data/pfam_table_recalculated_0830.csv', engine ='python')
+table = pd.read_csv('/sh2db_vagrant/SH2db/shared/data/pfam_table_recalculated_0830.csv', engine ='python')
 print(table.head())
 
 table.fillna(method='ffill', inplace = True)

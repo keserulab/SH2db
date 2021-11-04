@@ -6,7 +6,7 @@ import sys
 import os
 
 # importing table to get the needed folders names
-table = pd.read_csv('/home/takacsg/Documents/sh2db/data/SH2_domain_containing_prot_struct.csv')
+table = pd.read_csv('/sh2db_vagrant/SH2db/shared/data/SH2_domain_containing_prot_struct.csv')
 print(table.head())
 
 print("TABLE READING HAS FINISHED")

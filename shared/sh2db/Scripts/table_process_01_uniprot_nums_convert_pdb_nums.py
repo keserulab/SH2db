@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy 
 
-table = pd.read_csv('/home/takacsg/Documents/sh2db/data/SH2_domain_containing_prot_right_resnum_fixed.csv', engine ='python')
+table = pd.read_csv('/sh2db_vagrant/SH2db/shared/data/SH2_domain_containing_prot_right_resnum_fixed.csv', engine ='python')
 #print(table.head())
 
 # Calculating the new residue numbers for START points:
@@ -35,4 +35,4 @@ print("New PDB residue stop calculating", "\n", table.head(15))
 table["New_PDB_stop"] = table["New_PDB_stop"].clip(0)
 table["New_PDB_start"] = table["New_PDB_start"].clip(0)
 
-table.to_csv("../data/SH2_domain_containing_prot_right_resnum_with_pdb_nums.csv")
+table.to_csv("/sh2db_vagrant/SH2db/shared/data/data/SH2_domain_containing_prot_right_resnum_with_pdb_nums.csv")
