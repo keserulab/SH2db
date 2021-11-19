@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<!-- html5  -->
+
+<head>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=1260">
+	<meta name="keywords" content="SH2 domain, protein, Src homology 2, database">
+	<meta name="description" content="Webpage of the SH2 domain database of the Medicinal Chemistry Research Group at RCNS, Budapest, Hungary">
+	<meta name="copyright" content="(c) 2021 TTK">
+	<meta http-equiv="Content-Language" content="en-EN">
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://www.ttk.hu/wp-content/uploads/favicon.png">
+  <link rel="stylesheet" href="{% static 'medchem_stylesheet.css' %}">
+	<link rel="stylesheet" href="{% static 'medchem_stylesheet_small.css' %}">
+
+  <title>{% block title %}{% endblock %}</title>
+
+</head>
+
+<body>
+
+<div class="mainframe">
+
+<!-- Header -->
+	<div class="header">
+        <a href="index.html" style="text-decoration:none" class="header">SH2db<br>
+            <span style="font-size:20px">Structural database of SH2 domains</span></a><br>
+
+    <div class="logo_container">
+        <a href="http://www.ttk.mta.hu/en" target="_blank"><img class="kozepes_logo" src="images/mta-ttk-logo-03.jpg" alt=""></a>
+        <a href="index.html"><img class="kozepes_logo" src="images/medchem_small.png" alt=""></a>
+    </div>
+    </div>
+
+<!-- Navigation bar -->
+
+    <div class="colorstrip">
+    <ul id="navbar">
+        <li id="navbar"><a id="navbar" href="index.html">Home</a></li>
+        <li id="navbar"><a id="navbar" href="search.html">Search</a></li>
+        <li id="navbar"><a id="navbar" href="browse.html">Browse</a></li>
+        <li id="navbar"><a id="navbar" href="charts.html">Charts</a>
+        <li id="navbar"><a id="navbar" href="faq.html">FAQ</a></li>
+        <li id="navbar"><a id="navbar" href="contact.html">Contact</a></li>
+    </ul>
+    </div>
+
+  {% block content %}{% endblock %}
+
+</div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

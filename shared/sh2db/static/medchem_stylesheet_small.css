@@ -1,0 +1,320 @@
+/*RCNS-HAS Medchem Group stylsheet, David Bajusz, MTA TTK*/
+
+@media screen and (max-width:1023px) {
+
+body{
+    margin-top: 0px;
+    /* IE10 Consumer Preview */
+background-image: -ms-linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%, #E0E0E0 100%);
+/* Mozilla Firefox */
+background-image: -moz-linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%, #E0E0E0 100%);
+/* Opera */
+background-image: -o-linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%, #E0E0E0 100%);
+/* Webkit (Safari/Chrome 10) */
+background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #E0E0E0), color-stop(0.5, #FFFFFF), color-stop(1, #E0E0E0));
+/* Webkit (Chrome 11+) */
+background-image: -webkit-linear-gradient(bottom, #E0E0E0 0%, #FFFFFF 50%, #E0E0E0 100%);
+/* W3C Markup, IE10 Release Preview */
+background-image: linear-gradient(to top, #E0E0E0 0%, #FFFFFF 50%, #E0E0E0 100%);
+}
+
+h1{
+    text-align: center;
+    height: 50px;
+    margin-top: 0px;
+    padding-top: 20px;
+}
+
+
+.mainframe{
+    background-color: #FFFFFF;
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-left: 1px solid #E5E5E5;
+    border-right: 1px solid #E5E5E5;
+    border-bottom: 1px solid #E5E5E5;
+    box-shadow: 0px 0px 10px #CCCCCC;
+    outline: 1px solid transparent;
+    outline-style: ridge;
+}
+
+            /* Header */
+
+.header{
+    text-align: center;
+    margin-top: 0px;
+    padding-top: 25px;
+    height: auto;
+    font: bold 20px helvetica,sans-serif;
+    color: #2060E0;
+    text-decoration: none;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.logo_container{
+    display: inline;
+    padding-top: 10px;
+    height: auto;
+    max-width: 50%;
+    width: auto;
+    padding-top: 20px;
+}
+
+.kozepes_logo{
+    height: 60px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 10px;
+    max-width: 50%;
+    outline: none;
+    border: none;
+    -ms-interpolation-mode: bicubic;
+}
+
+.ipari_logo{
+    display: inline;
+    height: 50px;
+    padding-left: 5px;
+    padding-right: 5px;
+    max-width: 100%;
+    outline: none;
+    border: none;
+        -ms-interpolation-mode: bicubic;
+}
+
+.column1{
+    display: block;
+    width: 100%;
+    vertical-align: top;
+}
+
+.column2{
+    display: block;
+    margin-left: 5px;
+    width: 100%;
+    vertical-align: top;
+}
+
+.nagy_logo{
+    display: block;
+    max-width: 100%;
+    max-height: 200px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.nagy_kep{
+    overflow: scroll;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+.footer{
+    font-family: helvetica,sans-serif;
+        font-size: 8px;
+        text-align: center;
+        height: 20px;
+        margin-top: 20px;
+        padding-top: 0px;
+}
+
+                /* Right column */
+
+div.column2 p{
+    background-color: #DDDDDD;
+    text-align: center;
+    font: bold 15px helvetica,sans-serif;
+    padding: 3px;
+    margin: 1px;
+    width: 100%;
+}
+
+div.column2 a{
+    color: #2090F0;
+    text-decoration: none;
+    font-size: 10px;
+}
+
+                /* Navigation bar*/
+
+.colorstrip{
+    width: 100%;
+    height: auto;
+    background-color: #DDDDDD;
+    margin-bottom: 10px;
+}
+
+ul#navbar {
+    list-style-type: none;
+    margin: 0px 0px 20px 0px;
+    padding: 5px;
+    overflow: hidden;
+    text-align: center;
+}
+
+li#navbar {
+    display: inline-block;
+    font: bold 15px helvetica,sans-serif;
+    background-color: #DDDDDD;
+    border-color: #98bf21;
+    border: 1px;
+    margin-bottom: 10px;
+}
+
+a#navbar:link, a#navbar:visited {
+    font-weight: bold;
+    color: #2090F0;
+    background-color: #DDDDDD;
+    padding: 4px;
+    border-color: #DDDDDD;
+    text-align: center;
+    text-decoration: none;
+}
+
+a#navbar:hover, a#navbar:active {
+    background-color: #BBBBBB;
+}
+
+                /* Vertical Navigation bar*/
+
+.vcolorstrip{
+    display: block;
+    width: 100%
+    height: auto;
+    background-color: #DDDDDD;
+}
+
+ul#vnavbar {
+    list-style-type: none;
+    height: auto;
+    margin: 0px 0px 20px 0px;
+    padding: 5px;
+    overflow: hidden;
+    text-align: center;
+}
+
+li#vnavbar {
+    display: inline-block;
+    font: bold 15px helvetica,sans-serif;
+    background-color: #DDDDDD;
+    border-color: #98bf21;
+    border: 4px 4px 4px 4px;
+    padding: 4px 4px 4px 4px;
+}
+
+a#vnavbar:link, a#vnavbar:visited {
+    font-weight: bold;
+    color: #2090F0;
+    background-color: #DDDDDD;
+    padding: 4px;
+    border-color: #DDDDDD;
+    text-align: center;
+    text-decoration: none;
+}
+
+a#vnavbar:hover, a#vnavbar:active {
+    background-color: #BBBBBB;
+}
+
+                /* Content */
+
+.small_icon{
+    width: 16px;
+    height: 16px;
+    diplay: inline;
+}
+
+.date{
+    font-family: helvetica,sans-serif;
+    font-size: 10px;
+    color: #AAAAAA;
+}
+
+div#people{
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    width: 70%;
+}
+
+div#content{
+    margin-bottom: 50px;
+    position: relative;
+}
+
+div#content h1, div#people h1{ 
+    font-family: helvetica,sans-serif;
+    font-size: 25px;
+    text-align: center;
+    height: 50px;
+    margin-top: 0px;
+    padding-top: 20px;
+}
+
+div#content h3, div#people h3{ 
+    font-family: helvetica,sans-serif;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 0px;
+    font-weight: normal;
+}
+
+div#content p, div#content li, div#people p, div#people li{ 
+    font-family: helvetica,sans-serif;
+    line-height: 200%;
+    font-size: 14px;
+}
+
+div#content a{
+    color: #2090F0;
+    text-decoration: none;
+}
+
+.kis_logo_container{
+    margin-bottom: 20px;
+}
+
+.kis_logo{
+    height: 75px;
+    padding-left: 5px;
+    padding-right: 5px;
+ }
+
+img#portrait{
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    max-width: 250px;
+    max-height: 300px;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+div#pubs{
+    margin-top: 50px;
+}
+            /*Google maps*/
+
+#map_canvas_acc{
+        position: relative;
+                max-width: auto;
+                height: 400px;
+ }
+
+#map_canvas_ven{
+                position: relative;
+                max-width: auto;
+                height: 400px;
+ }
+
+}

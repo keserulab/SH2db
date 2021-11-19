@@ -1,0 +1,48 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}RCNS-HAS Medicinal Chemistry Research Group{% endblock %}
+
+{% block content %}
+<!-- Left column -->
+<div class="column1">
+
+    <img class="nagy_kep" src="{% static "images/medchemgroup1.jpg" %}" alt="">
+
+    <div id="content">
+
+    <p>Our research group has been established in 2013 by György M. Keserű on the basis of a preceding synthetic organic chemistry group. Since then we established national and international, government and industry founded research programs focusing on two major topics:</p>
+    <ul>
+        <li>fragment based approaches in the lead discovery of GPCR and kinase targets</li>
+        <li>chemical process development for small molecule active pharmaceutical ingredients</li>
+    </ul>
+
+    <br>
+
+    <p><b>Funding agencies</b></p>
+    <a href="http://www.agykutatas.com/" target="_blank"><img class="kozepes_logo" style="float: left" src="{% static "images/nap.png" %}" alt=""></a>
+    <a href="http://nkfih.gov.hu/english" target="_blank"><img class="kozepes_logo" style="float: left" src="{% static "images/nkfih.png" %}" alt=""></a>
+    <a href="http://ec.europa.eu/research/mariecurieactions/" target="_blank"><img class="kozepes_logo" style="float: left" src="{% static "images/marie_curie_actions.jpg" %}" alt=""></a>
+
+    <br>
+
+    </div>
+
+    </div>
+
+<!-- Right column -->
+
+    <div class="column2">
+
+    <p>Research portfolio
+    <a href="projects.html#cns"><img class="nagy_logo" src="{% static "images/daao.jpg" %}" alt=""></a>
+    <a href="projects.html#cns">D-amino acid oxidase (DAAO) inhibitors for the treatment of cognitive impairment associated with schizophrenia (CIAS)</a>
+    <a href="projects.html#cns"><img class="nagy_logo" src="{% static "images/fracs.jpg" %}" alt=""></a>
+    <a href="projects.html#cns">Allosteric GPCR ligands for psychiatric indications (mild cognitive impairment (MCI), anxiety disorders, authism spectrum disease (ASD))</a>
+    <a href="projects.html#jak"><img class="nagy_logo" src="{% static "images/jak.jpg" %}" alt=""></a>
+    <a href="projects.html#jak">Janus kinase 2 (JAK2) inhibitors for the treatment of myleopoliferative diseases</a>
+    <a href="projects.html#oncokids"><img class="nagy_logo" src="{% static "images/oncokids.jpg" %}" alt=""></a>
+    <a href="projects.html#oncokids">OncoKids: discovery of cancer biomarkers for pediatric malignancies</a></p>
+
+  </div>
+{% endblock %}
