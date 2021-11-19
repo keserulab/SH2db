@@ -1,20 +1,24 @@
 {% extends "./base.html" %}
 {% load static %}
 
-{% block title %}SH2DB - a database for SH2 domain structures{% endblock %}
+{% block title %}SH2DB - FAQ{% endblock %}
 
 {% block current-navbar %}
-<li class="active"><a href="index">Home</a></li>
+<li><a href="index">Home</a></li>
 <li><a href="search">Search</a></li>
 <li><a href="browse">Browse</a></li>
 <li><a href="charts">Charts</a></li>
-<li><a href="faq">FAQ</a></li>
+<li class="active"><a href="faq">FAQ</a></li>
 <li><a href="contact">Contact</a></li>
 {% endblock %}
 
 {% block content %}
 <!-- Left column -->
-<div class="container">
+<div class="column1">
+
+    <img class="nagy_kep" src="{% static "images/medchemgroup1.jpg" %}" alt="">
+
+    <div id="content">
 
     <p>Our research group has been established in 2013 by György M. Keserű on the basis of a preceding synthetic organic chemistry group. Since then we established national and international, government and industry founded research programs focusing on two major topics:</p>
     <ul>
@@ -24,5 +28,5 @@
 
     <br>
 
- </div>
+  </div>
 {% endblock %}

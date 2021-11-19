@@ -6,17 +6,17 @@ def index(request):
     return render(request, 'index.html')
 
 def search(request):
-    return render(request, 'templates/search.html')
+    return render(request, 'search.html')
 
 def browse(request):
-    return render(request, 'templates/browse.html')
+    return render(request, 'browse.html')
 
 def charts(request):
-    return render(request, 'templates/charts.html')
+    return render(request, 'charts.html')
 
 def faq(request):
-    return render(request, 'templates/faq.html')
+    return render(request, 'faq.html')
 
 def contact(request):
-    return render(request, 'templates/contact.html')
+    return render(request, 'contact.html')
 
