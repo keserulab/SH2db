@@ -10,9 +10,9 @@ from common.models import Publication
 class Structure(models.Model):
     pdb_code = models.CharField(max_length=4, unique=True)
     publication_date = models.DateField()
-    publication = models.ForeignKey('Publication', on_delete=models.CASCADE)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     resolution = models.DecimalField(max_digits=5, decimal_places=3)
-    structure_type = models.ForeignKey('StructureType', on_delete=models.CASCADE)
+    structure_type = models.ForeignKey(StructureType, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.pdb_code
@@ -23,7 +23,7 @@ class Structure(models.Model):
 
 class Chain(models.Model):
     chain_ID = models.CharField(max_length=1)
-    structure = models.ForeignKey('self', on_delete=models.CASCADE)
+    structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.chain_ID
@@ -33,10 +33,9 @@ class Chain(models.Model):
 
 
 class StructureDomain(models.Model):
-    chain = models.ForeignKey('Chain', on_delete=models.CASCADE)
+    chain = models.ForeignKey(Chain, on_delete=models.CASCADE)
     domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
-    sequence = models.ForeignKey('Sequence', on_delete=models.CASCADE)
-    pdbdata = models.ForeignKey('PDBData', on_delete=models.CASCADE)
+    pdbdata = models.ForeignKey(PDBData, on_delete=models.CASCADE)
 
     def __str__(self):
         return '{} {}'.format(self.domain, self.chain)
