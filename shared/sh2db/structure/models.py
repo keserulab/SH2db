@@ -12,7 +12,7 @@ class Structure(models.Model):
     publication_date = models.DateField()
     publication = models.ForeignKey('Publication', on_delete=models.CASCADE)
     resolution = models.DecimalField(max_digits=5, decimal_places=3)
-    structure_type = models.ForeignKey('self', on_delete=models.CASCADE)
+    structure_type = models.ForeignKey('StructureType', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.pdb_code
@@ -33,10 +33,10 @@ class Chain(models.Model):
 
 
 class StructureDomain(models.Model):
-    chain = models.ForeignKey('self', on_delete=models.CASCADE)
+    chain = models.ForeignKey('Chain', on_delete=models.CASCADE)
     domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
-    sequence = models.ForeignKey('self', on_delete=models.CASCADE)
-    pdbdata = models.ForeignKey('self', on_delete=models.CASCADE)
+    sequence = models.ForeignKey('Sequence', on_delete=models.CASCADE)
+    pdbdata = models.ForeignKey('PDBData', on_delete=models.CASCADE)
 
     def __str__(self):
         return '{} {}'.format(self.domain, self.chain)
