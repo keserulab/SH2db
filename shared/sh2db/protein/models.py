@@ -16,8 +16,11 @@ class Protein(models.Model):
 
 
 class ProteinConformation(models.Model):
-    isoform = models.ForeignKey('Isoform', on_delete=models.CASCADE)
+    domain = models.ForeignKey('Domain', on_delete=models.CASCADE)
     state = models.ForeignKey('ProteinState', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '<{}-{}>'.format(self.domain.isoform.protein.entry_name, self.state.slug)
 
     class Meta():
         ordering = ('id', )
@@ -61,10 +64,43 @@ class ProteinFamily(models.Model):
 class Isoform(models.Model):
 	protein = models.ForeignKey('Protein', on_delete=models.CASCADE)
 	accession = models.CharField(max_length=100, db_index=True, null=True)
-	sequence = models.TextField()
 
 	def __str__(self):
-		return '{}-{}'.format(self.protein.entry_name, accession)
+		return '<{}-{}>'.format(self.protein.entry_name, self.accession)
 
 	class Meta():
 		db_table = 'protein_isoform'
+
+
+class Domain(models.Model):
+    domain_type = models.ForeignKey('DomainType', on_delete=models.CASCADE)
+    isoform = models.ForeignKey('Isoform', on_delete=models.CASCADE)
+    sequence = models.ForeignKey('Sequence', on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '<{}-{}>'.format(self.isoform.protein.entry_name, self.domain_type.name)
+
+    class Meta():
+        db_table = 'protein_domain'
+
+
+class DomainType(models.Model):
+    slug = models.SlugField(max_length=100, unique=True)
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+    class Meta():
+        db_table = 'protein_domaintype'
+
+
+class Sequence(models.Model):
+    sequence = models.TextField()
+
+    def __str__(self):
+        return self.sequence
+
+    class Meta():
+        db_table = 'sequence'
