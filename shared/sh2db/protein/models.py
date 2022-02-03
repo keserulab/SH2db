@@ -38,6 +38,23 @@ class ProteinState(models.Model):
         db_table = "protein_state"
 
 
+class ProteinSegment(models.Model):
+    slug = models.SlugField(max_length=100)
+    name = models.CharField(max_length=50)
+    category = models.CharField(max_length=50)
+    fully_aligned = models.BooleanField(default=False)
+    partial = models.BooleanField(default=False)
+    proteinfamily = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.slug
+
+    class Meta():
+        ordering = ('id', )
+        db_table = 'protein_segment'
+        unique_together = ('slug', 'proteinfamily')
+
+
 class Species(models.Model):
     latin_name = models.CharField(max_length=100, unique=True)
     common_name = models.CharField(max_length=100, blank=True)

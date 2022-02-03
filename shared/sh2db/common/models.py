@@ -11,7 +11,7 @@ class Publication(models.Model):
     reference = models.TextField(null=True)
 
     def __str__(self):
-    	return '{}-{}-{}...'.format(self.journal, self.year, self.title[:10])
+        return '{}-{}-{}...'.format(self.journal, self.year, self.title[:10])
 
     class Meta():
         db_table = 'publication'
