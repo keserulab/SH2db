@@ -19,6 +19,8 @@
 
 	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" crossorigin="anonymous">
 	<link rel="shortcut icon" type="image/x-icon" href="http://www.ttk.hu/wp-content/uploads/favicon.png">
+	
+	{% block head %}{% endblock %}
 
 
   <title>{% block title %}{% endblock %}</title>
@@ -26,12 +28,12 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
+	<nav class="navbar navbar-inverse navbar-static-top">
       <div class="container">
         <div class="navbar-header">
           <a class="navbar-brand" href="#">SH2DB</a>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
+        <div id="navbar" class="navbar-collapse">
           <ul class="nav navbar-nav">
 			{% block current-navbar %}{% endblock %}
           </ul>
@@ -42,29 +44,31 @@
 <!-- Header -->
 	<div class="container">
 		<div class="row">
-		<p><span><a href="http://www.ttk.mta.hu/en" target="_blank"><img src="{% static 'images/medchem.png' %}" alt=""></a></span></p>
-		
-		<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
+				
+		<div class="col-md-12">
 			<p>Some content here</p>
-		</div><!--/.sidebar-offcanvas-->
+		</div><!--/.column -->
 		
 		</div><!--/.row -->
-    </div><!--/.container -->
 
 
   {% block content %}{% endblock %}
-
+  
+	</div><!--/.container -->
 
 <footer class="footer">
       <div class="container">
-        <p class="text-muted">This site uses</p>
-		<p class="text-muted">This site uses</p>
-      </div>
+		<div class="row">
+		  <div class="col-md-12">
+			<p class="text-muted">This site uses</p>
+		  </div><!--/.column -->
+		</div><!--/.row -->
+      </div><!--/.container -->
 </footer>
 
-	<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="{% static 'js/bootstrap.min.js' %}" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{% static 'js/bootstrap.min.js' %}" crossorigin="anonymous"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

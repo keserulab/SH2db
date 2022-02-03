@@ -1,6 +1,10 @@
 {% extends "./base.html" %}
 {% load static %}
 
+{% block head %}
+<link rel="stylesheet" href="//cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" crossorigin="anonymous">
+{% endblock %}
+
 {% block title %}SH2DB - Browse{% endblock %}
 
 {% block current-navbar %}
@@ -13,13 +17,33 @@
 {% endblock %}
 
 {% block content %}
-<!-- Left column -->
-<div class="column1">
+<div class="row">
+	<div class="col-md-12">
+	
+	<table class="table" id="myTable">
+	  <thead>
+		<tr>
+		  {% for header in headers %}
+		  <th>{{ header }}</th>
+		  {% endfor %}
+		</tr>
+	  </thead>
+	  <tbody>
+		{% for row in data %}
+		<tr>
+		  <td>{{ row.Family }}</td>
+		  <td><a href="protein/{{ row.Gene_name }}">{{ row.Gene_name }}</a></td>
+		  <td>{{ row.Species }}</td>
+		  <td><a href="https://www.uniprot.org/uniprot/P42684" target="_blank">{{ row.Uniprot }}</a></td>
+		</tr>
+		{% endfor %}
+	  </tbody>
+	</table>
+	
+	
+	<br>
 
-    <img class="nagy_kep" src="{% static "images/medchemgroup1.jpg" %}" alt="">
-
-    <div id="content">
-
+	
     <p>Our research group has been established in 2013 by György M. Keserű on the basis of a preceding synthetic organic chemistry group. Since then we established national and international, government and industry founded research programs focusing on two major topics:</p>
     <ul>
         <li>fragment based approaches in the lead discovery of GPCR and kinase targets</li>
@@ -27,6 +51,17 @@
     </ul>
 
     <br>
+	
+	</div>
 
-  </div>
+ </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+<script>
+	$(document).ready( function () {
+    $('#myTable').DataTable();
+	} );
+</script>
 {% endblock %}
