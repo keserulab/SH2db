@@ -1,0 +1,9 @@
+#!bin/bash
+
+# Optional
+echo ">> Deleting database"
+# find . -name "db.sqlite3" -delete
+psql -U SH2 -h localhost -d SH2 -c 'drop schema public cascade; create schema public;'
+
+echo ">> Running manage.py migrate"
+/env/bin/python3 manage.py migrate
