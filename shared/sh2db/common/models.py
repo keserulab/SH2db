@@ -1,9 +1,10 @@
 from django.db import models
+from django.db.models.base import Model
 
 # Create your models here.
 
 class Publication(models.Model):
-	journal = models.TextField(null=True)
+    journal = models.TextField(null=True)
     title = models.TextField(null=True)
     authors = models.TextField(null=True)
     year = models.IntegerField(null=True)
