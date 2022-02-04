@@ -33,17 +33,7 @@ class Command(BaseBuild):
 
         # parsing data file
         self.parse_file()
-        with open(os.sep.join([settings.DATA_DIR, 'domains_without_structure_1119.csv']), newline='') as csvfile:
-            uniprot_reader = csv.reader(csvfile, delimiter=';', quotechar='|')
-            for i, row in enumerate(uniprot_reader):
-                if i==0:
-                    continue
-                self.proteins[row[2]] = ['',row[1],'HUMAN',row[3]]
-        pprint.pprint(self.proteins)
-        with open(os.sep.join([settings.DATA_DIR, 'protein_data.csv']), 'w') as f:
-            for i, j in self.proteins.items():
-                f.write(','.join(j)+'\n')
-        return 0
+ 
         # creating families
         self.build_families()
         
@@ -64,17 +54,16 @@ class Command(BaseBuild):
         self.build_domains()
 
     def parse_file(self):
-        with open(os.sep.join([settings.DATA_DIR, 'SH2_domain_containing_prot_struct.csv']), newline='') as csvfile:
+        with open(os.sep.join([settings.DATA_DIR, 'protein_data.csv']), newline='') as csvfile:
             uniprot_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
             for i, row in enumerate(uniprot_reader):
-                if i==0:
-                    continue
-                if row[6] not in self.families:
-                    self.families.append(row[6])
-                if row[8] not in self.species:
-                    self.species.append(row[8])
-                if row[1] not in self.proteins:
-                    self.proteins[row[1]] = [row[6],row[7],row[8],row[11]]
+                if row[0] not in self.families:
+                    self.families.append(row[0])
+                if row[2] not in self.species:
+                    self.species.append(row[2])
+                entry_name = row[1]+'_'+row[2]
+                if entry_name not in self.proteins:
+                    self.proteins[entry_name] = [row[0],row[1],row[2],row[3]]
 
     def build_families(self):
         for f in self.families:
