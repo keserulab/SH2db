@@ -2,8 +2,7 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
-import pandas as pd
-import json
+from protein.models import Protein, Domain
 
 def index(request):
     return render(request, 'index.html')
@@ -12,14 +11,10 @@ def search(request):
     return render(request, 'search.html')
 
 def browse(request):
-    df = pd.read_csv("home/static/data/protein_data.csv")
+
+    headers = ["Family", "Gene name", "Species", "Uniprot"]
     
-    headers = df.columns
-    
-    # parsing the DataFrame in json format.
-    json_records = df.reset_index().to_json(orient ='records')
-    data = []
-    data = json.loads(json_records)
+    data = Protein.objects.all()
     
     return render(request, 'browse.html', {'data' : data, 'headers' : headers})
 

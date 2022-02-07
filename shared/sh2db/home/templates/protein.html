@@ -1,0 +1,38 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}SH2DB - {{ protein.name }} protein entry{% endblock %}
+
+{% block current-navbar %}
+<li><a href="/index">Home</a></li>
+<li><a href="/search">Search</a></li>
+<li><a href="/browse">Browse</a></li>
+<li><a href="/charts">Charts</a></li>
+<li><a href="/faq">FAQ</a></li>
+<li><a href="/contact">Contact</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+	
+	<h2>{{ protein.name }}</h2>
+	<br>
+	<p>Recommended name: {{fullname}}</p>
+	<p>Gene name: {{protein.name}}</p>
+	<p>No. of SH2 domains: {{ domains | length }}</p>
+	<p>Uniprot: <a href="https://www.uniprot.org/uniprot/{{ protein.accession }}" target="_blank">{{ protein.accession }}</a></p>
+	
+	{% if domains|length > 1 %}
+		{% for domain in domains %}
+		<h3>{{ domain.domain_type }} SH2 domain</h3>
+		<p>Sequence: {{ domain.sequence }}</p>
+		{% endfor %}
+	{% else %}
+		<h3>SH2 domain</h3>
+		<p>Sequence: {{ domains.0.sequence }}</p>
+	{% endif %}
+	</div>
+
+ </div>
+{% endblock %}
