@@ -1,15 +1,11 @@
 from django.db import models
-from django.db.models.aggregates import Max
-from django.db.models.base import Model
-from django.db.models.fields.related import ForeignKey
 
-# Create your models here.
 
 class Structure(models.Model):
     pdb_code = models.CharField(max_length=4, unique=True)
     publication_date = models.DateField()
     publication = models.ForeignKey('common.Publication', on_delete=models.CASCADE)
-    resolution = models.DecimalField(max_digits=5, decimal_places=3)
+    resolution = models.DecimalField(max_digits=5, decimal_places=3, null=True)
     structure_type = models.ForeignKey('StructureType', on_delete=models.CASCADE)
 
     def __str__(self):

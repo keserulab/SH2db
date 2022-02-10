@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Protein(models.Model):
     parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
     family = models.ForeignKey('ProteinFamily', on_delete=models.CASCADE)

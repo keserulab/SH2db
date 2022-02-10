@@ -1,0 +1,6 @@
+pdb,Protein Data Bank,https://www.rcsb.org/structure/$index
+pubmed,PubMed,https://pubmed.ncbi.nlm.nih.gov/$index
+doi,DOI,https://dx.doi.org/$index
+pubchem,PubChem,https://pubchem.ncbi.nlm.nih.gov/compound/$index
+uniprot,UniProt,https://www.uniprot.org/uniprot/$index
+raw_link,URL,$index
