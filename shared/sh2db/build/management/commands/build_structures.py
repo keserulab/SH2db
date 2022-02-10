@@ -164,4 +164,3 @@ class Command(BaseBuild):
             data['resolution'] = None
         data['publication_date'] = json_data['rcsb_accession_info']['initial_release_date'][:10]
         return data
-
