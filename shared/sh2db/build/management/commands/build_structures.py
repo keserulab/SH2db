@@ -5,8 +5,9 @@ from django.db import connection
 from django.db import IntegrityError
 
 from common.models import Publication, WebLink, WebResource, Journal
-from protein.models import Domain, Sequence
+from protein.models import Domain, Sequence, ProteinSegment
 from structure.models import Structure, Chain, StructureDomain, PDBData, StructureType
+from residue.models import Residue, ResidueGenericNumber
 
 import csv
 import os
@@ -14,6 +15,7 @@ import pprint
 import urllib
 import json
 from datetime import datetime
+from Bio.PDB import Polypeptide
 
 
 class Command(BaseBuild):
@@ -21,7 +23,11 @@ class Command(BaseBuild):
     pdbs = []
     chains = {}
     domains = {}
+    seqnums = {}
+    protein_seqs_aligned = {}
+    gns = []
     pdbs_path = os.sep.join([settings.DATA_DIR, 'structures'])
+    unnatural_amino_acids = {'Mse':'M', 'Cso':'C', 'Cas':'C'}
 
     def add_arguments(self, parser):
         parser.add_argument("--debug", default=False, action="store_true", help="Debug mode")
@@ -48,10 +54,73 @@ class Command(BaseBuild):
         # Domains
         self.build_structure_domains()
 
+        # Residues
+        self.build_structure_residues()
+
+    def build_structure_residues(self):
+        for key, val in self.protein_seqs_aligned.items():
+            if '_' in val[0]:
+                protname = val[0].split('_')[0]
+            else:
+                protname = val[0]
+            try:
+                domain = Domain.objects.filter(name=key[:4]+'_'+key[-1]+'_'+key[5], parent__isoform__protein__name=protname, isoform__protein__name=protname, domain_type__slug=key[-1])[0]
+            except IndexError:
+                print('Warning: Residues not built for {}'.format(key))
+                continue
+            resis = []
+            for j, aa in enumerate(val[1]):
+                if aa in ['',' ','-']:
+                    continue
+                if self.gns[j]!='':
+                    seg = ProteinSegment.objects.get(name=self.gns[j][:-2])
+                else:
+                    seg = self.find_segment(j)
+                gn = self.gns[j]
+                if gn=='':
+                    gn = None
+                else:
+                    gn = ResidueGenericNumber.objects.get(label=gn)
+                aa = val[1][j]
+                res = Residue()
+                res.domain = domain
+                res.protein_segment = seg
+                res.generic_number = gn
+                res.sequence_number = int(self.seqnums[val[0]][j])
+                res.amino_acid = aa
+                try:
+                    res.amino_acid_three_letter = Polypeptide.one_to_three(aa)
+                except KeyError:
+                    res.amino_acid = self.unnatural_amino_acids[aa]
+                    res.amino_acid_three_letter = aa
+                resis.append(res)
+            Residue.objects.bulk_create(resis)
+
+    def find_segment(self, position):
+        next_seg, prev_seg = False, False
+        for gn in self.gns[position:]:
+            if gn!='':
+                next_seg = gn[:2]
+                break
+        if not next_seg:
+            seg = ProteinSegment.objects.get(name='C-term')
+        for i in range(len(self.gns[:position]),0,-1):
+            gn = self.gns[i]
+            if gn not in ['',' ','-']:
+                prev_seg = gn[:-2]
+                break
+        if not prev_seg:
+            seg = ProteinSegment.objects.get(name='N-term')
+        if next_seg and prev_seg:
+            seg = ProteinSegment.objects.get(name=prev_seg+next_seg)
+        return seg
+
     def parse_alignment_file(self):
         with open(os.sep.join([settings.DATA_DIR, 'table_from_alignment_with_pdbs_0917.csv']), newline='') as csvfile:
             structure_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
             for i, row in enumerate(structure_reader):
+                if i==1:
+                    self.gns = row[2:]
                 # PDB IDs
                 if row[1]!='nums' and row[1]!='seq' and len(row[1])>3:
                     pdb = row[1][:4]
@@ -59,15 +128,21 @@ class Command(BaseBuild):
                     domain = row[1][-1]
                     gene = row[0].split('_')[0]
                     seq = ''.join(row[2:]).replace('-','')
+                    self.protein_seqs_aligned[row[1]] = [row[0], row[2:]]
                     if pdb not in self.pdbs:
                         self.pdbs.append(pdb)
                         self.chains[pdb] = [chain]
-                        self.domains[pdb] = {'chains':{chain:[domain, seq]}, 'gene':gene}
+                        self.domains[pdb] = {'chains':{chain:{domain:seq}}, 'gene':gene}
                     else:
                         if chain not in self.chains[pdb]:
                             self.chains[pdb].append(chain)
                         if chain not in self.domains[pdb]['chains']:
-                            self.domains[pdb]['chains'][chain] = [domain, seq]
+                            self.domains[pdb]['chains'][chain] = {domain:seq}
+                        if domain not in self.domains[pdb]['chains'][chain]:
+                            self.domains[pdb]['chains'][chain][domain] = seq
+
+                elif row[1]=='nums':
+                    self.seqnums[row[0]] = row[2:]
 
     def build_pdbdata(self, filename):
         with open(filename, 'r') as f:
@@ -77,20 +152,20 @@ class Command(BaseBuild):
 
     def build_structure_domains(self):
         for pdb, vals in self.domains.items():
-            for chain, domain in vals['chains'].items():
-                try:
-                    chain_obj = Chain.objects.get(structure__pdb_code=pdb, chain_ID=chain)
-                except Chain.DoesNotExist:
-                    continue
-                parent_domain = Domain.objects.get(isoform__protein__name=vals['gene'], domain_type__slug=domain[0], parent__isnull=True)
-                seq, created = Sequence.objects.get_or_create(sequence=domain[1])
-                # Protein domain
-                prot_domain, created = Domain.objects.get_or_create(isoform=parent_domain.isoform, domain_type=parent_domain.domain_type, sequence=seq, parent=parent_domain)
-                # PDBData
-                pdbdata = self.build_pdbdata(os.sep.join([self.pdbs_path, parent_domain.isoform.protein.family.name.replace(' ','_'), parent_domain.isoform.protein.name, pdb, '{}_{}_SH2_{}_SUPERPOSED.pdb'.format(pdb,chain,domain[0])]))
-                # Structure domain
-                struct_domain, created = StructureDomain.objects.get_or_create(chain=chain_obj, domain=prot_domain, pdbdata=pdbdata)
-
+            for chain, domains in vals['chains'].items():
+                for domain, seq in domains.items():
+                    try:
+                        chain_obj = Chain.objects.get(structure__pdb_code=pdb, chain_ID=chain)
+                    except Chain.DoesNotExist:
+                        continue
+                    parent_domain = Domain.objects.get(name=vals['gene']+'_'+domain, isoform__protein__name=vals['gene'], domain_type__slug=domain, parent__isnull=True)
+                    seq, created = Sequence.objects.get_or_create(sequence=seq)
+                    # Protein domain
+                    prot_domain, created = Domain.objects.get_or_create(name=pdb+'_'+domain+'_'+chain, isoform=parent_domain.isoform, domain_type=parent_domain.domain_type, sequence=seq, parent=parent_domain)
+                    # PDBData
+                    pdbdata = self.build_pdbdata(os.sep.join([self.pdbs_path, parent_domain.isoform.protein.family.name.replace(' ','_'), parent_domain.isoform.protein.name, pdb, '{}_{}_SH2_{}_SUPERPOSED.pdb'.format(pdb,chain,domain)]))
+                    # Structure domain
+                    struct_domain, created = StructureDomain.objects.get_or_create(chain=chain_obj, domain=prot_domain, pdbdata=pdbdata)
 
     def build_chains(self):
         for pdb, chain_IDs in self.chains.items():
@@ -133,6 +208,7 @@ class Command(BaseBuild):
             doi, created = WebLink.objects.get_or_create(index=data['doi'], web_resource=WebResource.objects.get(slug='doi'))
         else:
             doi = None
+        authors = ', '.join(data['authors'])
         pub, created = Publication.objects.get_or_create(journal=journal, title=data['title'], authors=data['authors'], year=data['year'], reference=doi)
         return pub
 
@@ -141,7 +217,7 @@ class Command(BaseBuild):
         try:
             response = urllib.request.urlopen('https://data.rcsb.org/rest/v1/core/entry/{}'.format(pdb))
         except urllib.error.HTTPError:
-            print('Error: {} PDB ID not found on RCSB.')
+            print('Error: {} PDB ID not found on RCSB.'.format(pdb))
             return data
         json_data = json.loads(response.read())
         response.close()

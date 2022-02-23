@@ -91,6 +91,7 @@ class Isoform(models.Model):
 
 
 class Domain(models.Model):
+    name = models.SlugField(max_length=100, unique=True)
     domain_type = models.ForeignKey('DomainType', on_delete=models.CASCADE)
     isoform = models.ForeignKey('Isoform', on_delete=models.CASCADE)
     sequence = models.ForeignKey('Sequence', on_delete=models.CASCADE)

@@ -104,7 +104,7 @@ class Command(BaseBuild):
             else:
                 name = i
                 domaintype = 'N'
-            domain = Domain.objects.get(parent__isnull=True, isoform__protein__name=name, domain_type__slug=domaintype)
+            domain = Domain.objects.get(name=name+'_'+domaintype, parent__isnull=True, isoform__protein__name=name, domain_type__slug=domaintype)
             resis = []
             for j, seqnum in enumerate(seqnums):
                 if seqnum in ['',' ','-']:
@@ -138,7 +138,6 @@ class Command(BaseBuild):
         if not next_seg:
             seg = ProteinSegment.objects.get(name='C-term')
         for i in range(len(self.gns[:position]),0,-1):
-        # for gn in self.gns[:position+1].reverse():
             gn = self.gns[i]
             if gn not in ['',' ','-']:
                 prev_seg = gn[:-2]
@@ -163,7 +162,7 @@ class Command(BaseBuild):
                 print('Error: {} Protein not in database'.format(i))
                 continue
             seq, created = Sequence.objects.get_or_create(sequence=j)
-            domain, created = Domain.objects.get_or_create(domain_type=domaintype, isoform=isoform, sequence=seq, parent=None)
+            domain, created = Domain.objects.get_or_create(name= gene_name+'_'+domaintype.slug, domain_type=domaintype, isoform=isoform, sequence=seq, parent=None)
 
     def parse_alignment_file(self):
         scheme = ResidueNumberingScheme.objects.get(short_name='GN')
