@@ -30,6 +30,8 @@ class StructureDomain(models.Model):
     chain = models.ForeignKey('Chain', on_delete=models.CASCADE)
     domain = models.ForeignKey('protein.Domain', on_delete=models.CASCADE)
     pdbdata = models.ForeignKey('PDBData', on_delete=models.CASCADE)
+    #name = models.SlugField(max_length=100, unique=True)
+    #sequence = models.ForeignKey('protein.Sequence', on_delete=models.CASCADE)
 
     def __str__(self):
         return '{} {}'.format(self.domain, self.chain)

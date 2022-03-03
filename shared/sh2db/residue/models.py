@@ -2,7 +2,9 @@ from django.db import models
 
 
 class Residue(models.Model):
-    domain = models.ForeignKey('protein.Domain', on_delete=models.CASCADE)
+    #domain = models.ForeignKey('protein.Domain', on_delete=models.CASCADE)
+    domain = models.ForeignKey('protein.Domain', null=True, on_delete=models.CASCADE)
+    structure_domain = models.ForeignKey('structure.StructureDomain', null=True, on_delete=models.CASCADE)
     protein_segment = models.ForeignKey('protein.ProteinSegment', null=True, on_delete=models.CASCADE)
     generic_number = models.ForeignKey('ResidueGenericNumber', related_name='compare', null=True, on_delete=models.CASCADE)
     sequence_number = models.SmallIntegerField()

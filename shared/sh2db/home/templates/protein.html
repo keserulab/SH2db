@@ -27,11 +27,20 @@
 		{% for domain in domains %}
 		<h3>{{ domain.domain_type }} SH2 domain</h3>
 		<p>Sequence: {{ domain.sequence }}</p>
+		{% for structuredomain in structuredomains %}
+			{% if structuredomain.domain == domain %}
+				<p><a href="/structure/{{ structuredomain.domain.name }}">{{ structuredomain.domain.name }}</a></p>
+			{% endif %}
+		{% endfor %}
 		{% endfor %}
 	{% else %}
 		<h3>SH2 domain</h3>
 		<p>Sequence: {{ domains.0.sequence }}</p>
 	{% endif %}
+	
+	
+	
+
 	</div>
 
  </div>

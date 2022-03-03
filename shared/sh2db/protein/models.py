@@ -95,7 +95,7 @@ class Domain(models.Model):
     domain_type = models.ForeignKey('DomainType', on_delete=models.CASCADE)
     isoform = models.ForeignKey('Isoform', on_delete=models.CASCADE)
     sequence = models.ForeignKey('Sequence', on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)     # this might become obsolete
 
     def __str__(self):
         return '<{}-{}>'.format(self.isoform.protein.entry_name, self.domain_type.name)
