@@ -25,7 +25,7 @@ def protein(request, name):
     entry = root.findall('{http://uniprot.org/uniprot}entry')[0]
     fullname = entry.findall('{http://uniprot.org/uniprot}protein')[0].findall('{http://uniprot.org/uniprot}recommendedName')[0].findall('{http://uniprot.org/uniprot}fullName')[0].text
     
-    domains = Domain.objects.filter(isoform__protein=protein)
+    domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True)
 
     structuredomains = StructureDomain.objects.filter(domain__isoform__protein=protein)
     
