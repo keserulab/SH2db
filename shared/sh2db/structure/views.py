@@ -9,15 +9,27 @@ def index(request):
 
 def structure(request, pdb_code):
     try:
-        structure = Structure.objects.get(name=name)
+        structure = Structure.objects.get(pdb_code=pdb_code)
     except Structure.DoesNotExist:
         return render(request, 'error.html')
 
-    return render(request, 'protein.html', {'domains' : domains,  'structuredomains': structuredomains, 'protein': protein, 'fullname': fullname})
-    return HttpResponse("Hello, world. This is the protein page for %s." % pdb_code)
+    return render(request, 'structure.html', {'structure' : structure})
     
 def chain(request, pdb_code, chain_ID):
-    return HttpResponse("Hello, world. This is the Chain page for %s, %s." % (pdb_code, chain_ID) )
+    try:
+        structure = Structure.objects.get(pdb_code=pdb_code)
+        chain = Chain.objects.get(structure=structure, chain_ID=chain_ID)
+    except Chain.DoesNotExist:
+        return render(request, 'error.html')
+        
+    return render(request, 'chain.html', {'chain' : chain})
     
-def domain(request, pdb_code, domain, chain_ID):
-    return HttpResponse("Hello, world. This is the StructureDomain page for %s, %s, %s." % (pdb_code, chain_ID, domain) )
+def structuredomain(request, pdb_code, domain, chain_ID):
+    try:
+        structure = Structure.objects.get(pdb_code=pdb_code)
+        chain = Chain.objects.get(structure=structure, chain_ID=chain_ID)
+        structuredomain = StructureDomain.objects.get(chain=chain)
+    except Chain.DoesNotExist:
+        return render(request, 'error.html')
+        
+    return render(request, 'structuredomain.html', {'structuredomain' : structuredomain})
