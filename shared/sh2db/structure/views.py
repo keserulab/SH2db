@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 
-from structure.models import Structure, Chain, StructureDomain
+from structure.models import Structure, Chain, StructureDomain, PDBData
 
 def index(request):
     return HttpResponse("Hello, world. This is SH2db structure page.")
@@ -24,11 +24,15 @@ def chain(request, pdb_code, chain_ID):
         
     return render(request, 'chain.html', {'chain' : chain})
     
-def structuredomain(request, pdb_code, domain, chain_ID):
+def structuredomain(request, pdb_code, domaintype, chain_ID):
     try:
         structure = Structure.objects.get(pdb_code=pdb_code)
         chain = Chain.objects.get(structure=structure, chain_ID=chain_ID)
-        structuredomain = StructureDomain.objects.get(chain=chain)
+        structuredomains = StructureDomain.objects.filter(chain=chain)
+
+        for i in structuredomains:
+            if i.domain.domain_type.slug == domaintype:
+                structuredomain = i
     except Chain.DoesNotExist:
         return render(request, 'error.html')
         

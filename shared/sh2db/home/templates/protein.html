@@ -17,16 +17,40 @@
 	{% if domains|length > 1 %}
 		{% for domain in domains %}
 		<h3>{{ domain.domain_type }} SH2 domain</h3>
-		<p>Sequence: {{ domain.sequence }}</p>
-		{% for structuredomain in structuredomains %}
-			{% if structuredomain.domain == domain %}
-				<p><a href="/structure/{{ structuredomain.domain.name }}">{{ structuredomain.domain.name }}</a></p>
-			{% endif %}
-		{% endfor %}
+		<h4>Sequence</h4>
+		<p>{{ domain.sequence }}</p>
+		<h4>Structures</h4>
+
+		<div class="row">
+			{% for structuredomain in structuredomains %}
+				
+				{% if structuredomain.domain.parent == domain %}
+					<div class="col-md-1">
+					<span><a href="/structure/{{ structuredomain.domain.name }}">{{ structuredomain.domain.name }}</a></span>
+					</div>
+				{% endif %}
+				
+			{% endfor %}
+			</div>
+
 		{% endfor %}
 	{% else %}
 		<h3>SH2 domain</h3>
-		<p>Sequence: {{ domains.0.sequence }}</p>
+		<h4>Sequence</h4>
+		<p>{{ domains.0.sequence }}</p>
+		<h4>Structures</h4>
+		
+		<div class="row">
+		{% for structuredomain in structuredomains %}
+			
+			{% if structuredomain.domain.parent == domains.0 %}
+				<div class="col-md-1">
+				<span><a href="/structure/{{ structuredomain.domain.name }}">{{ structuredomain.domain.name }}</a></span>
+				</div>
+			{% endif %}
+			
+		{% endfor %}
+		</div>
 	{% endif %}
 	
 	

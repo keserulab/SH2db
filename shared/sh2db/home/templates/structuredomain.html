@@ -1,4 +1,27 @@
 {% extends "./navbar.html" %}
 {% load static %}
 
-{% block title %}SH2DB - {{ protein.name }} domain structure entry{% endblock %}
+{% block title %}SH2DB - {{ structuredomain.domain.name }} domain structure entry{% endblock %}
+
+{% block content %}
+<script src="{% static 'js/ngl.js' %}"></script>
+<script>
+    var stage;
+    document.addEventListener("DOMContentLoaded", function () {
+      stage = new NGL.Stage("nglviewport");
+      var stringBlob = new Blob( {{ structuredomain.pdbdata.pdb }} , { type: 'text/plain'} );
+      stage.loadFile( stringBlob, { ext: "pdb" , defaultRepresentation: true} );
+    });
+</script>
+
+
+<div class="row">
+	<div class="col-md-12">
+    <div id="nglviewport" style="width: 800px; height: 800px"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
