@@ -37,13 +37,15 @@
         </p>
     {% endif %}
 
-	
-    <h4>Chains</h4>
+	{% if chains %}
+        <h4>Chains: 
+        {% for chain in chains %}
+	        <a href="structure/{{ structure.pdb_code }}_{{ chain.chain_ID }}">{{ chain.chain_ID }}</a>
+        {% endfor %}
+        </h4>
+    {% endif %}
 
-    {% for chain in chains %}
-	    <p>No. of SH2 domains: {{ domains | length }}</p>
-	    <p>Uniprot: <a href="https://www.uniprot.org/uniprot/{{ protein.accession }}" target="_blank">{{ protein.accession }}</a></p>
-    {% endfor %}
+    
     </div>
 
 </div>
