@@ -40,7 +40,7 @@
 	{% if chains %}
         <h4>Chains: 
         {% for chain in chains %}
-	        <a href="structure/{{ structure.pdb_code }}_{{ chain.chain_ID }}">{{ chain.chain_ID }}</a>
+	        <a href="/structure/{{ structure.pdb_code }}_{{ chain.chain_ID }}">{{ chain.chain_ID }}</a>
         {% endfor %}
         </h4>
     {% endif %}
