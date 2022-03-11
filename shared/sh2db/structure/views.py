@@ -1,11 +1,28 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.template.loader import render_to_string
+
 
 
 from structure.models import Structure, Chain, StructureDomain
+from residue.models import Residue, ResidueGenericNumber
+from protein.models import ProteinSegment
 
 def index(request):
     return HttpResponse("Hello, world. This is SH2db structure page.")
+
+def sequence_table(structuredomains):
+    domains=[]
+    for i in structuredomains:
+        if i.domain not in domains:
+            domains.append(i.domain)
+
+    proteinsegments = ProteinSegment.objects.all()
+    residuegenericnumbers = ResidueGenericNumber.objects.all()
+    residues = Residue.objects.filter(domain__in=domains)
+
+    return render_to_string('table.html', {'domains': domains, 'structuredomains' : structuredomains, 'proteinsegments,': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues})
+    #return render_to_string('table.html', {'proteinsegments,': proteinsegments})
 
 def structure(request, pdb_code):
     try:
@@ -14,11 +31,21 @@ def structure(request, pdb_code):
         structuredomains = StructureDomain.objects.filter(chain__structure=structure)
 
         protein = structuredomains[0].domain.isoform.protein
+        domains=[]
+        for i in structuredomains:
+            if i.domain not in domains:
+                domains.append(i.domain)
 
+        #proteinsegments = ProteinSegment.objects.all()
+        #residuegenericnumbers = ResidueGenericNumber.objects.all()
+        #residues = Residue.objects.filter(domain__in=domains)
+        #sequencetable = render_to_string('table.html', {'domains': domains, 'structuredomains' : structuredomains, 'proteinsegments,': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues})
+        sequencetable = sequence_table(structuredomains)
     except Structure.DoesNotExist:
         return render(request, 'error.html')
 
-    return render(request, 'structure.html', {'structure' : structure, 'chains': chains, 'structuredomains' : structuredomains, 'protein': protein})
+    return render(request, 'structure.html', {'structure' : structure, 'chains': chains, 'structuredomains' : structuredomains, 'protein': protein, 
+                                                'sequencetable': sequencetable})
     
 def chain(request, pdb_code, chain_ID):
     try:

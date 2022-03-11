@@ -1,4 +1,5 @@
 {% extends "./navbar.html" %}
+
 {% load static %}
 {% load remove_indextag %}
 
@@ -36,7 +37,7 @@
             {{ structure.publication.title }} (to be published)
         </p>
     {% endif %}
-
+    
 	{% if chains %}
         <h4>Chains: 
         {% for chain in chains %}
@@ -45,6 +46,11 @@
         </h4>
     {% endif %}
 
+    {{ sequencetable }}
+
+    {% for proteinsegment in proteinsegments %}
+         <p>{{ proteinsegment }}</p>
+    {% endfor %}
     
     </div>
 
