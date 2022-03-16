@@ -11,19 +11,6 @@ from protein.models import ProteinSegment
 def index(request):
     return HttpResponse("Hello, world. This is SH2db structure page.")
 
-def sequence_table(structuredomains):
-    domains=[]
-    for i in structuredomains:
-        if i.domain not in domains:
-            domains.append(i.domain)
-
-    proteinsegments = ProteinSegment.objects.all()
-    residuegenericnumbers = ResidueGenericNumber.objects.all()
-    residues = Residue.objects.filter(domain__in=domains)
-
-    return render_to_string('table.html', {'domains': domains, 'structuredomains' : structuredomains, 'proteinsegments,': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues})
-    #return render_to_string('table.html', {'proteinsegments,': proteinsegments})
-
 def structure(request, pdb_code):
     try:
         structure = Structure.objects.get(pdb_code=pdb_code)
@@ -36,16 +23,16 @@ def structure(request, pdb_code):
             if i.domain not in domains:
                 domains.append(i.domain)
 
-        #proteinsegments = ProteinSegment.objects.all()
-        #residuegenericnumbers = ResidueGenericNumber.objects.all()
-        #residues = Residue.objects.filter(domain__in=domains)
-        #sequencetable = render_to_string('table.html', {'domains': domains, 'structuredomains' : structuredomains, 'proteinsegments,': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues})
-        sequencetable = sequence_table(structuredomains)
+        proteinsegments = ProteinSegment.objects.all()
+        residuegenericnumbers = ResidueGenericNumber.objects.all()
+        residues = Residue.objects.filter(domain__in=domains)
+        
     except Structure.DoesNotExist:
         return render(request, 'error.html')
 
-    return render(request, 'structure.html', {'structure' : structure, 'chains': chains, 'structuredomains' : structuredomains, 'protein': protein, 
-                                                'sequencetable': sequencetable})
+    return render(request, 'structure.html', {'structure' : structure, 'chains': chains, 'structuredomains' : structuredomains, 
+                                            'protein': protein, 'domains': domains,
+                                            'proteinsegments': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues})
     
 def chain(request, pdb_code, chain_ID):
     try:

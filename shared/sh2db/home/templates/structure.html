@@ -46,11 +46,7 @@
         </h4>
     {% endif %}
 
-    {{ sequencetable }}
-
-    {% for proteinsegment in proteinsegments %}
-         <p>{{ proteinsegment }}</p>
-    {% endfor %}
+    {% include "./table.html" with structure=structure structuredomains=structuredomains domains=domains proteinsegments=proteinsegments residuegenericnumbers=residuegenericnumbers residues=residues %}
     
     </div>
 
