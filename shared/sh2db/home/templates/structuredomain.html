@@ -1,0 +1,30 @@
+{% extends "./chain.html" %}
+{% load static %}
+
+{% block title %}SH2DB - {{ structuredomain.domain.name }} domain structure entry{% endblock %}
+
+{% block structuredomain_content %}
+<script src="{% static '' %}"></script>
+<script>
+    var stage;
+    document.addEventListener("DOMContentLoaded", function () {
+        var stage = new NGL.Stage("nglviewport");
+      stage.loadFile("rcsb://1crn", {defaultRepresentation: true}).then(function (component) {
+  // add a "cartoon" representation to the structure component
+  component.addRepresentation("cartoon");
+  // provide a "good" view of the structure
+  component.autoView();
+    });
+</script>
+
+
+<div class="row">
+	<div class="col-md-6">
+    <div id="nglviewport" style="width: 400px; height: 300px"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

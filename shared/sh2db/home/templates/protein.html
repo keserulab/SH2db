@@ -1,16 +1,7 @@
-{% extends "./base.html" %}
+{% extends "./navbar.html" %}
 {% load static %}
 
 {% block title %}SH2DB - {{ protein.name }} protein entry{% endblock %}
-
-{% block current-navbar %}
-<li><a href="/index">Home</a></li>
-<li><a href="/search">Search</a></li>
-<li><a href="/browse">Browse</a></li>
-<li><a href="/charts">Charts</a></li>
-<li><a href="/faq">FAQ</a></li>
-<li><a href="/contact">Contact</a></li>
-{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -26,12 +17,45 @@
 	{% if domains|length > 1 %}
 		{% for domain in domains %}
 		<h3>{{ domain.domain_type }} SH2 domain</h3>
-		<p>Sequence: {{ domain.sequence }}</p>
+		<h4>Sequence</h4>
+		<p>{{ domain.sequence }}</p>
+		<h4>Structures</h4>
+
+		<div class="row">
+			{% for structuredomain in structuredomains %}
+				
+				{% if structuredomain.domain.parent == domain %}
+					<div class="col-md-1">
+					<span><a href="/structure/{{ structuredomain.domain.name }}">{{ structuredomain.domain.name }}</a></span>
+					</div>
+				{% endif %}
+				
+			{% endfor %}
+			</div>
+
 		{% endfor %}
 	{% else %}
 		<h3>SH2 domain</h3>
-		<p>Sequence: {{ domains.0.sequence }}</p>
+		<h4>Sequence</h4>
+		<p>{{ domains.0.sequence }}</p>
+		<h4>Structures</h4>
+		
+		<div class="row">
+		{% for structuredomain in structuredomains %}
+			
+			{% if structuredomain.domain.parent == domains.0 %}
+				<div class="col-md-1">
+				<span><a href="/structure/{{ structuredomain.domain.name }}">{{ structuredomain.domain.name }}</a></span>
+				</div>
+			{% endif %}
+			
+		{% endfor %}
+		</div>
 	{% endif %}
+	
+	
+	
+
 	</div>
 
  </div>

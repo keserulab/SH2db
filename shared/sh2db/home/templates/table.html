@@ -1,0 +1,33 @@
+{% load static %}
+{% load in %}
+
+<div class="table-responsive-md">
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th></th>
+            {% for proteinsegment in proteinsegments %}
+                {% if residuegenericnumbers|in_proteinsegment:proteinsegment|length > 0 %}
+                <th colspan="{{ residuegenericnumbers|in_proteinsegment:proteinsegment|length }}" scope="colgroup">{{ proteinsegment.slug }}</th>
+                {% endif %}
+            {% endfor %}
+        </tr>
+        <tr>
+            <th></th>
+            {% for residuegenericnumber in residuegenericnumbers %}
+                <th scope="col">{{ residuegenericnumber.label }}</td>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for domain in domains %}
+        <tr>
+            <th scope="row">{{ domain.name }}</th>
+            {% for residue in residues|in_domain:domain %}
+                <td title="{{ residue }}">{{ residue.amino_acid }}</td>
+            {% endfor %} 
+        </tr>
+    {% endfor %}  
+    </tbody>
+</table>
+</div>
