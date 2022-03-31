@@ -208,8 +208,9 @@ class Command(BaseBuild):
             doi, created = WebLink.objects.get_or_create(index=data['doi'], web_resource=WebResource.objects.get(slug='doi'))
         else:
             doi = None
-        authors = ', '.join(data['authors'])
-        pub, created = Publication.objects.get_or_create(journal=journal, title=data['title'], authors=data['authors'], year=data['year'], reference=doi)
+        authors = [i.replace(',','') for i in data['authors']]
+        authors = ', '.join(authors)
+        pub, created = Publication.objects.get_or_create(journal=journal, title=data['title'], authors=authors, year=data['year'], reference=doi)
         return pub
 
     def pdb_request_by_pdb(self, pdb):

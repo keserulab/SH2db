@@ -8,7 +8,7 @@ from structure.models import Structure, Chain, StructureDomain
 from residue.models import Residue, ResidueGenericNumber
 from protein.models import ProteinSegment
 
-import StringIO
+from io import StringIO
 
 def index(request):
     return HttpResponse("Hello, world. This is SH2db structure page.")

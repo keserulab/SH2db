@@ -16,8 +16,8 @@
 	<meta name="copyright" content="(c) 2021 TTK">
 	<meta http-equiv="Content-Language" content="en-EN">
 	
-
-	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'home/css/jquery-ui.css' %}" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'home/css/bootstrap.min.css' %}" crossorigin="anonymous">
 	<link rel="shortcut icon" type="image/x-icon" href="http://www.ttk.hu/wp-content/uploads/favicon.png">
 	
 	{% block head %}{% endblock %}
@@ -57,9 +57,10 @@
       </div><!--/.container -->
 </footer>
 
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<script src="{% static 'home/js/jquery-3.1.1.min.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'home/js/jquery-ui.js' %}" crossorigin="anonymous"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{% static 'js/bootstrap.min.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'home/js/bootstrap.min.js' %}" crossorigin="anonymous"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -4,6 +4,7 @@ from django.http import HttpResponse
 
 from protein.models import Protein, Domain
 
+
 def index(request):
     return render(request, 'index.html')
 

@@ -1,62 +1,331 @@
 {% extends "./navbar.html" %}
 {% load static %}
+{% load protein_tags %}
+
 
 {% block title %}SH2DB - {{ protein.name }} protein entry{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static 'home/css/jquery.dataTables.min.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'home/css/yadcf_bootstrap_version.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'home/css/select2.css' %}" type="text/css" />
+<style>
+.helix {
+    background-color: lightblue;
+}
+.turn {
+    background-color: #87CEFA;
+}
+.sheet {
+    background-color: #48D1CC;
+}
+.loop {
+    background-color: paleturquoise;
+}
+.terminal {
+    background-color: lightcyan;
+}
+.residue {
+    text-align: center;
+    padding: 3px;
+}
+.res-color-A, .res-color-M, .res-color-V, .res-color-L, .res-color-I {
+    background-color: yellow;
+}
+.res-color-R, .res-color-K {
+    background-color: blue;
+    color: white;
+}
+.res-color-D, .res-color-E {
+    background-color: red;
+    color: white;
+}
+.res-color-N, .res-color-Q, .res-color-S, .res-color-T {
+    background-color: darkviolet;
+    color: white;
+}
+.res-color-W {
+    background-color: green;
+}
+.res-color-Y, .res-color-F {
+    background-color: springgreen;
+}
+.res-color-P {
+    background-color: lightcoral;
+    color: white;
+}
+.res-color-G {
+    background-color: plum;
+}
+.res-color-H {
+    background-color: dodgerblue;
+}
+.res-color-C {
+    background-color: goldenrod;
+}
+</style>
+{% endblock %}
+
+
+
 {% block content %}
 <div class="row">
-	<div class="col-md-12">
-	
-	<h2>{{ protein.name }}</h2>
-	<br>
-	<p>Recommended name: {{fullname}}</p>
-	<p>Gene name: {{protein.name}}</p>
-	<p>No. of SH2 domains: {{ domains | length }}</p>
-	<p>Uniprot: <a href="https://www.uniprot.org/uniprot/{{ protein.accession }}" target="_blank">{{ protein.accession }}</a></p>
-	
-	{% if domains|length > 1 %}
-		{% for domain in domains %}
-		<h3>{{ domain.domain_type }} SH2 domain</h3>
-		<h4>Sequence</h4>
-		<p>{{ domain.sequence }}</p>
-		<h4>Structures</h4>
+    <div class="col-md-12">
+    
+    <h2>{{ protein.name }}</h2>
+    <br>
+    <p>Recommended name: {{fullname}}</p>
+    <p>Gene name: {{protein.name}}</p>
+    <p>No. of SH2 domains: {{ domains | length }}</p>
+    <p>Uniprot: <a href="https://www.uniprot.org/uniprot/{{ protein.accession }}" target="_blank">{{ protein.accession }}</a></p>
+    
+        <h3>Sequences</h3>
+        <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        {% for segment, colnum in segments.items %}
+                        <th class="{{segment.category}}" colspan="{{ colnum }}" style='padding: 5px;'>{{ segment }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        {% for gn in gns %}
+                        <td class='residue' style='padding: 5px;'>{{ gn|short_gn }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% for domain_residues in residues %}
+                    <tr>
+                        <td style='padding: 5px;'>{{ domain_residues.0 }}</td>
+                        {% for res in domain_residues|slice:"1:" %}
+                            {% if res.amino_acid %}
+                            <td class='residue res-color-{{res.amino_acid}}' >{{ res.amino_acid }}</td>
+                            {% else %}
+                            <td class='residue'>-</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- {% for domain in domains %}
+        <h3>{{ domain.domain_type }} SH2 domain</h3>
+        <h4>Sequence</h4>
+        <p>{{ domain.sequence }}</p>
+        {% endfor %} -->
+</div class="row">
+    <div class="col-md-12">
+        <h3>Structures</h3>
 
-		<div class="row">
-			{% for structuredomain in structuredomains %}
-				
-				{% if structuredomain.domain.parent == domain %}
-					<div class="col-md-1">
-					<span><a href="/structure/{{ structuredomain.domain.name }}">{{ structuredomain.domain.name }}</a></span>
-					</div>
-				{% endif %}
-				
-			{% endfor %}
-			</div>
+        
+        <div class="row">
+            <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
+                {% if structures|length > 0 %}
+                <table class="table" id="structureTable">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>PDB</th>
+                            <th>Type</th>
+                            <th>Resolution</th>
+                            <th>Domains</th>
+                            <th>Chains</th>
+                            <th>Publication date</th>
+                            <th>Authors</th>
+                            <th>Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for structure in structures %}
+                        <tr>
+                            <td><a href="/structure/{{ structure.pdb_code }}">{{ structure.pdb_code }}</a></td>
+                            <td>{{ structure.structure_type.name }}</a></td>
+                            <td>{{ structure.resolution }}</td>
+                            <td>
+                            {% for domain in structure.chain.all.0.structure_domain.all %}
+                                {{domain.domain.domain_type.name|linebreaks}}
+                            {% endfor %}
+                            </td>
+                            <td>
+                            {% for chain in structure.chain.all %}
+                                {{ chain }}
+                            {% endfor %}
+                            </td>
+                            <td>{{ structure.publication_date|date:"Y-m-d" }}</td>
+                            <td>{{ structure.publication.authors|authors_short }}</td>
+                            <td><a href="#">{{ structure.publication.reference.index }}</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                No structures available
+                {% endif %}
+            <br>
 
-		{% endfor %}
-	{% else %}
-		<h3>SH2 domain</h3>
-		<h4>Sequence</h4>
-		<p>{{ domains.0.sequence }}</p>
-		<h4>Structures</h4>
-		
-		<div class="row">
-		{% for structuredomain in structuredomains %}
-			
-			{% if structuredomain.domain.parent == domains.0 %}
-				<div class="col-md-1">
-				<span><a href="/structure/{{ structuredomain.domain.name }}">{{ structuredomain.domain.name }}</a></span>
-				</div>
-			{% endif %}
-			
-		{% endfor %}
-		</div>
-	{% endif %}
-	
-	
-	
+            </div>
 
-	</div>
+        </div>
+    
+    
+    
+    
+
+    </div>
 
  </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'home/js/jquery.dataTables.min.js' %}"> </script>
+<script src="{% static 'home/js/dataTables.tableTools.min.js' %}"> </script>
+<script src="{% static 'home/js/jquery.dataTables.columnFilter.js' %}"> </script>
+<script src="{% static 'home/js/jquery.dataTables.yadcf.js' %}"> </script>
+<script src="{% static 'home/js/select2.js' %}"> </script>
+<script>
+    $(document).ready( function () {
+        var oTable = $("#structureTable").DataTable({
+            scrollY:        "65vh",
+            scrollX:        true,
+            scrollCollapse: true,
+            scroller:       true,
+            paging:         false,
+            aaSorting:      [],
+            autoWidth:      false,
+            order:          [[0, "asc"],[1,"asc"]],
+            columnDefs:      [{ "targets": "no-sort", "orderable": false }],
+            columns:        [
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                              null,
+                          ],
+            bInfo:        true,
+        });
+
+        yadcf.init(oTable,
+        [
+            {
+                column_number : 0,
+                filter_type: "multi_select",
+                select_type: "select2",
+                column_data_type: "html",
+                html_data_type: "text",
+                filter_default_label: "",
+                filter_match_mode : "exact",
+                filter_reset_button_text: false,
+                select_type_options: {
+                    width: "60px",
+                }
+            },
+            {
+                column_number : 1,
+                filter_type: "multi_select",
+                select_type: "select2",
+                // column_data_type: "html",
+                html_data_type: "text",
+                filter_default_label: "",
+                filter_match_mode : "exact",
+                filter_reset_button_text: false,
+                // select_type_options: {
+                //     width: "70px",
+                // }
+            },
+            {
+                column_number : 2,
+                filter_type: "range_number",
+                filter_reset_button_text: false,
+                filter_default_label: ["Min", "Max"],
+                select_type_options: {
+                    width: "50px",
+                }
+            },
+            {
+                column_number: 3,
+                filter_type: "multi_select",
+                select_type: "select2",
+                // column_data_type: "html",
+                html_data_type: "text",
+                filter_default_label: "",
+                filter_reset_button_text: false,
+                select_type_options: {
+                    width: "70px",
+                }
+            },
+            {
+                column_number : 4,
+                filter_type: "multi_select",
+                select_type: "select2",
+                // column_data_type: "html",
+                html_data_type: "text",
+                filter_default_label: "",
+                filter_match_mode : "exact",
+                filter_reset_button_text: false,
+                select_type_options: {
+                    width: "50px",
+                }
+            },
+            {
+                column_number : 5,
+                filter_type: "range_date",
+                filter_reset_button_text: false,
+                date_format: "yyyy-mm-dd",
+                datepicker_type: 'jquery-ui',
+                select_type: "select2",
+                filter_default_label: ["Min", "Max"],
+                // filter_reset_button_text: false,
+                select_type_options: {
+                    width: "50px",
+                }
+            },
+            {
+                column_number : 6,
+                filter_type: "multi_select",
+                select_type: "select2",
+                // column_data_type: "html",
+                html_data_type: "text",
+                filter_default_label: "",
+                filter_match_mode : "exact",
+                filter_reset_button_text: false,
+                select_type_options: {
+                    width: "140px",
+                }
+            },
+            {
+                column_number: 7,
+                filter_type: "multi_select",
+                select_type: "select2",
+                column_data_type: "html",
+                html_data_type: "text",
+                filter_default_label: "",
+                filter_reset_button_text: false,
+                // select_type_options: {
+                //     width: "35px",
+                // }
+            },
+        ],
+        {
+            cumulative_filtering: false
+        });
+
+        oTable.columns.adjust()
+    } );
+</script>
 {% endblock %}

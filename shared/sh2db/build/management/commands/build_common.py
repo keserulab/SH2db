@@ -41,4 +41,9 @@ class Command(BaseBuild):
         with open(self.protein_segments, newline='') as csvfile:
             ps_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
             for row in ps_reader:
-                seg, created = ProteinSegment.objects.get_or_create(slug=row[0], name=row[0], category=row[1], proteinfamily='SH2')
+                if row[1] in ['sheet','helix']:
+                    aligned = True
+                else:
+                    aligned = False
+
+                seg, created = ProteinSegment.objects.get_or_create(slug=row[0], name=row[0], category=row[1], proteinfamily='SH2', fully_aligned=aligned)
