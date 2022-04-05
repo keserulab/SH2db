@@ -102,7 +102,8 @@
                         <td style='padding: 5px;'>{{ domain_residues.0 }}</td>
                         {% for res in domain_residues|slice:"1:" %}
                             {% if res.amino_acid %}
-                            <td class='residue res-color-{{res.amino_acid}}' title='{{res}}'>{{ res.amino_acid }}</td>
+                            <td class='residue res-color-{{res.amino_acid}}' title='{{res}}
+{{res.amino_acid_three_letter}}'>{{ res.amino_acid }}</td>
                             {% else %}
                             <td class='residue'>-</td>
                             {% endif %}

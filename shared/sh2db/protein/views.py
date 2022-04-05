@@ -26,13 +26,12 @@ def protein(request, name):
     entry = root.findall('{http://uniprot.org/uniprot}entry')[0]
     fullname = entry.findall('{http://uniprot.org/uniprot}protein')[0].findall('{http://uniprot.org/uniprot}recommendedName')[0].findall('{http://uniprot.org/uniprot}fullName')[0].text
     
-    domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True)
+    domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True).order_by('-domain_type__slug')
 
     structuredomains = StructureDomain.objects.filter(domain__isoform__protein=protein)
 
     
     segments, gns, residues = align_domain_residues(domains)
-    print(residues)
 
     structures = []
     for s in structuredomains:
@@ -61,8 +60,9 @@ def align_domain_residues(domains):
                 gns[seg] = []
             for res in resis_in_seg:
                 if not res.generic_number:
-                    gns[seg] = [''] * len(resis_in_seg)
-                    break
+                    if len(resis_in_seg)>len(gns[seg]):
+                        gns[seg] = [''] * len(resis_in_seg)
+                        break
                 elif res.generic_number.label not in gns[seg]:
                     gns[seg].append(res.generic_number.label)
 
@@ -78,7 +78,6 @@ def align_domain_residues(domains):
     for resis in residues:
         aligned_residues = [resis[0].domain.domain_type.name]
         for seg in segments:
-            print(seg)
             seg_resis = resis.filter(protein_segment=seg)
             if seg.fully_aligned:
                 for gn in gns[seg]:
