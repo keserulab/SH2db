@@ -34,6 +34,14 @@ def structure(request, pdb_code):
                                             'protein': protein, 'domains': domains,
                                             'proteinsegments': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues})
     
+
+def zipped_pdb(request, structuredomains):
+    return "asdasd"
+
+def pymol_session(request, structuredomains, residues):
+    return "asdasd"
+
+
 def chain(request, pdb_code, chain_ID):
     try:
         structure = Structure.objects.get(pdb_code=pdb_code)
