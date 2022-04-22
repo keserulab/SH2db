@@ -17,17 +17,18 @@ class Structure(models.Model):
 
 class Chain(models.Model):
     chain_ID = models.CharField(max_length=1)
-    structure = models.ForeignKey('Structure', on_delete=models.CASCADE)
+    structure = models.ForeignKey('Structure', on_delete=models.CASCADE, related_name='chain')
 
     def __str__(self):
         return self.chain_ID
 
     class Meta():
         db_table = 'chain'
+        ordering = ['chain_ID']
 
 
 class StructureDomain(models.Model):
-    chain = models.ForeignKey('Chain', on_delete=models.CASCADE)
+    chain = models.ForeignKey('Chain', on_delete=models.CASCADE, related_name='structure_domain')
     domain = models.ForeignKey('protein.Domain', on_delete=models.CASCADE)
     pdbdata = models.ForeignKey('PDBData', on_delete=models.CASCADE)
     #name = models.SlugField(max_length=100, unique=True)

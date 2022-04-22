@@ -8,8 +8,22 @@ from structure.models import Structure, Chain, StructureDomain
 from residue.models import Residue, ResidueGenericNumber
 from protein.models import ProteinSegment
 
+from io import StringIO
+
 def index(request):
     return HttpResponse("Hello, world. This is SH2db structure page.")
+    
+def zipped_pdb(request, structuredomains):
+    mf = StringIO.StringIO()
+    with zipfile.ZipFile(mf, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
+        for structuredomain in structuredomains:
+            zf.writestr(structuredomain.domain.name+'.txt', structuredomain.pdbdata)
+
+    #Grab ZIP file from in-memory, make response with correct MIME-type
+    resp = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
+    # ..and correct content-disposition
+    resp['Content-Disposition'] = 'attachment; filename=%s' % zf
+    return resp
 
 def structure(request, pdb_code):
     try:
