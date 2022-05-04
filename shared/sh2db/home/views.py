@@ -2,15 +2,11 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
-from django.http import JsonResponse
-
 from django.db.models import Count
 
-from protein.models import Protein
+from protein.models import Protein, Domain
 
-from structure.models import StructureDomain
-
-import pandas as pd
+from structure.models import Structure, StructureDomain
 
 import csv
 
@@ -29,7 +25,7 @@ def browse(request):
     return render(request, 'browse.html', {'data' : data, 'headers' : headers})
 
 
-def get_csv(request, search_string):
+def get_csv(request, x, y):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(
         content_type='text/csv',
@@ -38,51 +34,66 @@ def get_csv(request, search_string):
 
     writer = csv.writer(response)
 
-
-    search_string_proteins = {'family': 'family__name',
-                                'species': 'species__latin_name'
-    }
-    search_string_structures = {'family': 'domain__parent__isoform__protein__family__name',
-                                'year': 'chain__structure__publication__year',
-                                'species': 'domain__parent__isoform__protein__species__latin_name'
-    }
-    
     headerline=['group']
-    
-    try:
-        proteins = Protein.objects.all().values(search_string_proteins[search_string]).annotate(count_items=Count('id'))
+    if y=='protein':
+        if x=='no_sh2':
+            lookup_string = {'no_sh2': 'isoform__protein'}[x]
+            lookup = Domain.objects.filter(parent__id__isnull=True).values(lookup_string).annotate(count_items=Count('id'))
+
+            counts={}
+            for row in lookup:
+                try:
+                    counts[list(row.values())[1]] += 1
+                except KeyError:
+                    counts[list(row.values())[1]] = 1
+
+            headerline.append('proteins')
+            writer.writerow(headerline)
+            for row in counts:
+                writer.writerow([row, counts[row]])
+
+            return response
+
+        else:
+            lookup_string = {'family': 'family__name',
+                            'species': 'species__latin_name'}[x]
+            lookup = Protein.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+            
         headerline.append('proteins')
-    except KeyError:
-        pass
-    try:
-        structures = StructureDomain.objects.all().values(search_string_structures[search_string]).annotate(count_items=Count('id'))
+    elif y=='structure':
+        if x=='year':
+            lookup_string = {'year': 'publication__year'}[x]
+            lookup = Structure.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+        else:
+            lookup_string = {'family': 'domain__parent__isoform__protein__family__name',
+                            'species': 'domain__parent__isoform__protein__species__latin_name'}[x]
+            groupby_string = 'chain__structure__id'
+            lookup = StructureDomain.objects.all().values(lookup_string).annotate(count_items=Count(groupby_string))
+
         headerline.append('structures')
-    except KeyError:
-        pass  
+    elif y=='structuredomain':
+        lookup_string = {'family': 'domain__parent__isoform__protein__family__name',
+                                'year': 'chain__structure__publication__year',
+                                'species': 'domain__parent__isoform__protein__species__latin_name'}[x]
+        lookup = StructureDomain.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+
+        headerline.append('structuredomains')
+    elif y=='publication':
+        pass
 
     writer.writerow(headerline)
+    for row in lookup:
+        writer.writerow(row.values())
 
-    if proteins and structures:
-        for row in zip(proteins,structures):
-            lista = list(row[0].values())
-            lista.append(list(row[1].values())[1])
-            writer.writerow(lista)
-    elif structures:
-        for row in structures:
-            lista = row.values()
-            writer.writerow(row.values())
-    elif proteins:
-        for row in proteins:
-            lista = row.values()
-            writer.writerow(lista)
-    
-
+    #if proteins and structures:
+    #    for row in zip(proteins,structures):
+    #        lista = list(row[0].values())
+    #        lista.append(list(row[1].values())[1])
+    #        writer.writerow(lista)
     return response
 
 def charts(request):
-    search_string = 'species'
-
-    return render(request, 'charts.html', {'search_string' : search_string})
+    return render(request, 'charts.html')
 
 def faq(request):
     return render(request, 'faq.html')
