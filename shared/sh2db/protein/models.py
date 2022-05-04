@@ -98,7 +98,10 @@ class Domain(models.Model):
     parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)     # this might become obsolete
 
     def __str__(self):
-        return '<{}-{}>'.format(self.isoform.protein.entry_name, self.domain_type.name)
+        if self.parent:
+            return self.name
+        else:
+            return '{}-{}'.format(self.isoform.protein.name, self.domain_type)
 
     class Meta():
         db_table = 'protein_domain'

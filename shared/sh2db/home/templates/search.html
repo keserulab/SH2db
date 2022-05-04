@@ -3,27 +3,65 @@
 
 {% block title %}SH2DB - Search{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static 'home/css/alignment.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'home/css/toggle_switch.css' %}" type="text/css" />
+<meta charset="utf-8">
+{% endblock %}
+
 {% block content %}
 
 <div class="row">
-	<div class="col-md-12">
-	
-    <p>Our research group has been established in 2013 by György M. Keserű on the basis of a preceding synthetic organic chemistry group. Since then we established national and international, government and industry founded research programs focusing on two major topics:</p>
-    <ul>
-        <li>fragment based approaches in the lead discovery of GPCR and kinase targets</li>
-        <li>chemical process development for small molecule active pharmaceutical ingredients</li>
-    </ul>
+    <div class="col-md-6">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <div style='display:inline;'>
+            	<label class="switch">
+                    <input type="checkbox" class="left_position" id="structure_toggle_button">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div style='display:inline;'>Structures</div>
+            <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="alignment_download_button"><span class="glyphicon glyphicon-download-alt"></span> Alignment</button>
+            </div>
+            <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="structure_download_button"><span class="glyphicon glyphicon-download-alt"></span> Structures</button>
+            </div>
+        </div>
+    </div>
+</div>
+       
 
-    <br>
-	
-	</div>
+{% include "alignment_table.html" with segments=segments gns=gns residues=residues checkbox=checkbox filter=filter %}
 
- </div>
+
+
  
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static 'home/js/table_functions.js' %}"></script>
 <script>
-	document.getElementById("navbar.search").classList.add('active');
+    document.getElementById("navbar.search").classList.add('active');
+    $(document).ready(function() {
+        // $("#alignment_table").parent().addClass("escape-container");
+        $(".structure").hide();
+        table_filter();
+        checkbox_selection();
+        alignment_download();
+        structure_download();
+        $("#structure_toggle_button").click(function() {
+            if ($(this).hasClass("left_position")) {
+                $(".structure").show();
+                $(this).addClass("right_position");
+                $(this).removeClass("left_position");
+            }
+            else if ($(this).hasClass("right_position")) {
+                $(".structure").hide();
+                $(this).addClass("left_position");
+                $(this).removeClass("right_position");
+            }
+        });
+    });
 </script>
 {% endblock %}
