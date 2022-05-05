@@ -1,6 +1,6 @@
 {% extends "./navbar.html" %}
 {% load static %}
-{% load common_tags %}
+{% load protein_tags %}
 
 
 {% block title %}SH2DB - {{ protein.name }} protein entry{% endblock %}
@@ -26,13 +26,43 @@
     <p>Uniprot: <a href="https://www.uniprot.org/uniprot/{{ protein.accession }}" target="_blank">{{ protein.accession }}</a></p>
     
         <h3>Sequences</h3>
-        {% include "alignment_table.html" with segments=segments gns=gns residues=residues %}
-    </div>
-</div>
-<div class="row">
+        <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        {% for segment, colnum in segments.items %}
+                        <th class="{{segment.category}}" colspan="{{ colnum }}" style='padding: 5px;'>{{ segment }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        {% for gn in gns %}
+                        <td class='residue' style='padding: 5px;'>{{ gn|short_gn }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% for domain_residues in residues %}
+                    <tr>
+                        <td style='padding: 5px;'>{{ domain_residues.0 }}</td>
+                        {% for res in domain_residues|slice:"1:" %}
+                            {% if res.amino_acid %}
+                            <td class='residue res-color-{{res.amino_acid}}' title='{{res}}
+{{res.amino_acid_three_letter}}'>{{ res.amino_acid }}</td>
+                            {% else %}
+                            <td class='residue'>-</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+</div class="row">
     <div class="col-md-12">
         <h3>Structures</h3>
-        
+        <div class="row">
             <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
                 {% if structures|length > 0 %}
                 <table class="table" id="structureTable">
@@ -87,7 +117,7 @@
             <br>
 
             </div>
-        
+        </div>
     </div>
 
  </div>

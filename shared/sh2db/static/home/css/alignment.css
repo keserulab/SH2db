@@ -1,0 +1,96 @@
+.helix {
+    background-color: lightblue;
+}
+.turn {
+    background-color: #87CEFA;
+}
+.sheet {
+    background-color: #48D1CC;
+}
+.loop {
+    background-color: paleturquoise;
+}
+.terminal {
+    background-color: lightcyan;
+}
+.residue {
+    text-align: center;
+    padding: 3px;
+}
+.res-color-A, .res-color-M, .res-color-V, .res-color-L, .res-color-I {
+    background-color: yellow;
+}
+.res-color-R, .res-color-K {
+    background-color: blue;
+    color: white;
+}
+.res-color-D, .res-color-E {
+    background-color: red;
+    color: white;
+}
+.res-color-N, .res-color-Q, .res-color-S, .res-color-T {
+    background-color: darkviolet;
+    color: white;
+}
+.res-color-W {
+    background-color: green;
+}
+.res-color-Y, .res-color-F {
+    background-color: springgreen;
+}
+.res-color-P {
+    background-color: lightcoral;
+    color: white;
+}
+.res-color-G {
+    background-color: plum;
+}
+.res-color-H {
+    background-color: dodgerblue;
+}
+.res-color-C {
+    background-color: goldenrod;
+}
+
+.escape-container {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: calc(-50vw + 16px);
+  margin-right: calc(-50vw + 16px);
+}
+
+/*#alignment_table thead tr th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+#alignment_table tr td:first-child,
+#alignment_table th:first-child {
+  position: -webkit-sticky;
+  position: sticky;
+  width:120px;
+  left: 0;
+  z-index: 2;
+  border-right: var(--border-size-s) solid var(--color-neutral-4);
+}
+
+#alignment_table tr td:nth-child(2),
+#alignment_table th:nth-child(2) {
+  position: -webkit-sticky;
+  position: sticky;
+  width: 120px;
+  left: 110px;
+  z-index: 3;
+  border-right: var(--border-size-s) solid var(--color-neutral-4);
+}
+
+#alignment_table tr td:nth-child(3),
+#alignment_table th:nth-child(3) {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 210px;
+  z-index: 4;
+  border-right: var(--border-size-s) solid var(--color-neutral-4);
+}*/

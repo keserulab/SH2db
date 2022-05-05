@@ -2,9 +2,10 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
+from protein.models import Protein, Domain, ProteinSegment
+from residue.models import Residue, ResidueGenericNumber
+from common.alignment import Alignment
 from django.db.models import Count
-
-from protein.models import Protein, Domain
 
 from structure.models import Structure, StructureDomain
 
@@ -14,7 +15,21 @@ def index(request):
     return render(request, 'index.html')
 
 def search(request):
-    return render(request, 'search.html')
+    domains = Domain.objects.all().order_by('isoform', 'domain_type', '-parent', 'name')
+
+    proteinsegments = ProteinSegment.objects.all()
+    residuegenericnumbers = ResidueGenericNumber.objects.all()
+    residues = Residue.objects.filter(domain__in=domains)
+
+    alignment = Alignment(domains)
+    segments, gns, residues = alignment.align_domain_residues()
+    
+    
+
+    return render(request, 'search.html', { 'domains': domains,
+                                            'proteinsegments': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues,
+                                            'gns': gns, 'segments': segments, 'checkbox': True, 'filter':True})
+    
 
 def browse(request):
 

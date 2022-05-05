@@ -29,7 +29,7 @@ class Chain(models.Model):
 
 class StructureDomain(models.Model):
     chain = models.ForeignKey('Chain', on_delete=models.CASCADE, related_name='structure_domain')
-    domain = models.ForeignKey('protein.Domain', on_delete=models.CASCADE)
+    domain = models.ForeignKey('protein.Domain', on_delete=models.CASCADE, related_name='structure_domain')
     pdbdata = models.ForeignKey('PDBData', on_delete=models.CASCADE)
     #name = models.SlugField(max_length=100, unique=True)
     #sequence = models.ForeignKey('protein.Sequence', on_delete=models.CASCADE)

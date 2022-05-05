@@ -58,6 +58,7 @@
 
 <script>
     $(document).ready( function () {
+        document.getElementById("navbar.browse").classList.add('active');
         var oTable = $("#browseTable").DataTable({
             scrollY:        "65vh",
             scrollX:        true,
@@ -138,16 +139,5 @@
         oTable.columns.adjust()
     } );
 </script>
-<script>
-    document.getElementById("navbar.browse").classList.add('active');
-</script>
 
-<!-- 
-<style type="text/css">
-    .dataTables_scrollHeadInner > table {
-        margin-right: 0px;
-        background-color: red;
-}
-</style>
- -->
 {% endblock %}

@@ -1,0 +1,115 @@
+{% extends "./navbar.html" %}
+
+{% load static %}
+{% load remove_indextag %}
+
+{% block title %}SH2DB - {{ structure.pdb_code }} structure entry{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'home/css/alignment.css' %}" type="text/css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-6">
+	
+	<h2>PDB structure <a href="https://www.rcsb.org/structure/{{ structure.pdb_code }}" target="_blank">{{ structure.pdb_code }}</a>
+        {% if chain %}
+            - chain {{ chain.chain_ID }}
+        {% endif %}
+        {% if structuredomain %}
+            - {{ structuredomain.domain.domain_type.name }} SH2 domain
+        {% endif %}
+    </h2>
+	<br>
+    <p>Protein: <a href="/protein/{{protein.name}}">{{protein.name}}</a></p>
+    <p>Published: {{ structure.publication_date }}</p>
+    <p>Method: {{ structure.structure_type.name }}</p>
+
+    {% if structure.resolution != None %}
+        <p>Resolution: {{ structure.resolution }}</p>
+    {% endif %}
+
+    {% if structure.publication.reference != None %}
+        <p>Publication: 
+            <a href="{{ structure.publication.reference.web_resource.url | remove_indextag }}{{ structure.publication.reference.index }}" target="_blank">
+                {{ structure.publication.title }}
+            </a>
+        </p>
+    {% else %}
+        <p>Publication: 
+            {{ structure.publication.title }} (to be published)
+        </p>
+    {% endif %}
+    
+    <h4>Domains: 
+    {% for domain in parent_domains %}
+        {{ domain.domain_type.slug }}
+    {% endfor %}
+    </h4>
+
+	{% if chains %}
+        <h4>Chains: 
+        {% for chain in chains %}
+	        {{ chain.chain_ID }}
+        {% endfor %}
+        </h4>
+    {% endif %}
+
+    </div>
+
+    
+    <div class="col-md-6">
+
+        <div id="viewport" style="width:500px; height:400px;"></div>
+        <div style="width:500px; background-color:#eaeaea; border-radius: 0px 0px 5px 5px;">
+            <p style="padding: 2px 0px 2px 5px; font-size: 10px;"><button id="fullscreen">Full Screen</button><a href="https://github.com/arose/ngl" target='_blank'> NGL</a> is a WebGL based 3D viewer powered by <a href="https://mmtf.rcsb.org" target='_blank'>MMTF</a>.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="alignment_download_button"><span class="glyphicon glyphicon-download-alt"></span> Alignment</button>
+            </div>
+            <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="structure_download_button"><span class="glyphicon glyphicon-download-alt"></span> Structures</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
+        {% include "alignment_table.html" with segments=segments gns=gns residues=residues checkbox=checkbox%}
+    </div>
+</div>
+
+{% block addon_js %}
+    <script src="{% static 'home/js/ngl.js' %}"></script>
+    <script src="{% static 'home/js/table_functions.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            // NGL viewer
+            stage = new NGL.Stage("viewport", { backgroundColor: "white" } );
+            var stringBlob = new Blob( [ `'{{structuredomains.0.pdbdata.pdb}}'` ], { type: 'text/plain'} );
+            var file = new File([stringBlob], "something.pdb");
+            stage.loadFile( file, { defaultRepresentation: true } );
+            $( "#fullscreen" ).click(function() {
+                stage.toggleFullscreen();
+            });
+            
+            checkbox_selection();
+            alignment_download();
+            structure_download();
+        });
+    </script>
+{% endblock %}
+
+{% block chain_content %}{% endblock %}
+
+{% endblock %}
+
