@@ -81,6 +81,9 @@ def structure(request, pdb_code):
                                             'protein': protein, 'domains': domains,
                                             'proteinsegments': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues,
                                             'gns': gns, 'segments': segments, 'parent_domains': parent_domains, 'checkbox': True})
+    
+def pymol_session(request, structuredomains, residues):
+    return "asdasd"
 
 def chain(request, pdb_code, chain_ID):
     try:

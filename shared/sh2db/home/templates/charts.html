@@ -1,26 +1,90 @@
 {% extends "./navbar.html" %}
+{% load static %}
 
 {% block title %}SH2DB - Charts{% endblock %}
 
 {% block content %}
-<div class="row">
-	<div class="col-md-12">
-	
-    <p>Our research group has been established in 2013 by György M. Keserű on the basis of a preceding synthetic organic chemistry group. Since then we established national and international, government and industry founded research programs focusing on two major topics:</p>
-    <ul>
-        <li>fragment based approaches in the lead discovery of GPCR and kinase targets</li>
-        <li>chemical process development for small molecule active pharmaceutical ingredients</li>
-    </ul>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12" id="chartArea">
 
-    <br>
-	
-	</div>
 
- </div>
+      <label for="select_x">X axis:</label>
+      <select name="select_x" id="select_x">
+        <option value="family" selected>Family</option>
+        <option value="year">Year</option>
+        <option value="species">Species</option>
+        <option value="no_sh2">No. of SH2 domains in entry</option>
+      </select>
+
+      <label for="select_y">Y axis:</label>
+      <select name="select_y" id="select_y">
+        <option value="protein" selected>Proteins</option>
+        <option value="structure">PDB entries</option>
+        <option value="structuredomain">SH2 domain structures</option>
+        <option value="publication">Publications</option>
+      </select>
+
+      <div id="grouped_bars"></div>
+
+      <p id="proba"></p>
+    </div>
+
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 	document.getElementById("navbar.charts").classList.add('active');
 </script>
+
+<script src="{% static 'home/js/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'home/js/d3.v7.js' %}"></script>
+<script src="{% static 'home/js/barchart.js' %}"></script>
+
+<script>
+    // set the dimensions and margins of the graph
+    const margin = {top: 10, right: 30, bottom: 20, left: 50},
+        width = document.getElementById('chartArea').clientWidth - margin.left - margin.right,
+        height = width / 2.0;
+
+    $(window).bind('load resize', function() {
+
+      const margin = {top: 10, right: 30, bottom: 20, left: 50},
+        width = document.getElementById('chartArea').clientWidth - margin.left - margin.right,
+        height = width / 2.0;
+      const select_x = $('#select_x').val();
+      const select_y = $('#select_y').val();
+      const url_mask = "{% url 'get_csv' 123 456 %}".replace(/123/, select_x.toString() )
+                                                    .replace(/456/, select_y.toString() );
+      barchart(url_mask, width, height);
+
+      $('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask);
+    
+    });
+    
+    $('#select_x').change( function() {
+      const select_x = $('#select_x').val();
+      const select_y = $('#select_y').val();
+      const url_mask = "{% url 'get_csv' 123 456 %}".replace(/123/, select_x.toString() )
+                                                    .replace(/456/, select_y.toString() );
+      barchart(url_mask, width, height);
+
+      $('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask);
+    
+    });
+
+    $('#select_y').change( function() {
+      const select_x = $('#select_x').val();
+      const select_y = $('#select_y').val();
+      const url_mask = "{% url 'get_csv' 123 456 %}".replace(/123/, select_x.toString() )
+                                                    .replace(/456/, select_y.toString() );
+      barchart(url_mask, width, height);
+
+      $('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask);
+    
+    });      
+
+    </script>
 {% endblock %}
