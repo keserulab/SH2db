@@ -7,6 +7,7 @@ class Structure(models.Model):
     publication = models.ForeignKey('common.Publication', on_delete=models.CASCADE)
     resolution = models.DecimalField(max_digits=5, decimal_places=3, null=True)
     structure_type = models.ForeignKey('StructureType', on_delete=models.CASCADE)
+    protein = models.ForeignKey('protein.Protein', on_delete=models.CASCADE, related_name='structure')
 
     def __str__(self):
         return self.pdb_code

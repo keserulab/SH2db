@@ -5,7 +5,7 @@ from django.db import connection
 from django.db import IntegrityError
 
 from common.models import Publication, WebLink, WebResource, Journal
-from protein.models import Domain, Sequence, ProteinSegment
+from protein.models import Domain, Sequence, ProteinSegment, Protein
 from structure.models import Structure, Chain, StructureDomain, PDBData, StructureType
 from residue.models import Residue, ResidueGenericNumber
 
@@ -181,6 +181,7 @@ class Command(BaseBuild):
             data = self.pdb_request_by_pdb(pdb)
             if len(data)==0:
                 continue
+            protein = Protein.objects.get(name=self.domains[pdb]['gene'])
 
             # Structure type
             method = self.build_structure_type(data['method'])
@@ -190,7 +191,7 @@ class Command(BaseBuild):
 
             # Structure
             structure, created = Structure.objects.get_or_create(pdb_code=pdb, publication_date=data['publication_date'], publication=pub, 
-                                                                 resolution=data['resolution'], structure_type=method)
+                                                                 resolution=data['resolution'], structure_type=method, protein=protein)
 
     def build_structure_type(self, method):
         if method=='SOLUTION NMR':
