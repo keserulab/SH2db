@@ -18,7 +18,7 @@ function barchart(url_mask, width, height){
     // List of groups = species here = value of the first column called group -> I show them on the X axis
     const groups = data.map(d => d.group)
 
-    const max_y = d3.max(data.map(d => d.count))
+    const max_y = d3.max(data.map(d => d.count).values())
 
     console.log(groups)
 
@@ -34,7 +34,7 @@ function barchart(url_mask, width, height){
 
     // Add Y axis
     const y = d3.scaleLinear()
-    .domain([0, 400])
+    .domain([0, 1.1 * max_y])
     .range([ height, 0 ]);
     svg.append("g")
     .call(d3.axisLeft(y));
@@ -51,7 +51,7 @@ function barchart(url_mask, width, height){
     .range(['#e41a1c','#377eb8','#4daf4a'])
 
     // Show the bars
-    svg.append("g")
+    const rects = svg.append("g")
     .selectAll("g")
     // Enter in data = loop group per group
     .data(data)
@@ -65,7 +65,16 @@ function barchart(url_mask, width, height){
         .attr("width", xSubgroup.bandwidth())
         .attr("height", d => height - y(d.value))
         .attr("fill", d => color(d.key));
- 
+
+    rects
+        .transition()
+        .duration(1000) // duration of the animation
+        .delay(200) // delay animation start
+        .attr("cx", (d, i) => d * 50)
+        .attr("cy", (d, i) => 40 + i * 100)
+        .transition() // start another transition after the first one ended
+        .attr("r", 20);
+        
     });
 
 }

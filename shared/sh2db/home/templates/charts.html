@@ -27,7 +27,6 @@
 
       <div id="grouped_bars"></div>
 
-      <p id="proba"></p>
     </div>
 
   </div>
@@ -45,6 +44,7 @@
 
 <script>
     // set the dimensions and margins of the graph
+
     const margin = {top: 10, right: 30, bottom: 20, left: 50},
         width = document.getElementById('chartArea').clientWidth - margin.left - margin.right,
         height = width / 2.0;
@@ -60,7 +60,7 @@
                                                     .replace(/456/, select_y.toString() );
       barchart(url_mask, width, height);
 
-      $('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask);
+      //$('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask); <p id="proba"></p>
     
     });
     
@@ -71,18 +71,24 @@
                                                     .replace(/456/, select_y.toString() );
       barchart(url_mask, width, height);
 
-      $('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask);
+      //$('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask);
     
     });
 
     $('#select_y').change( function() {
+
+      //if ( ( $("#select_x").val()==="no_sh2" & $("#select_x").val()==="structuredomain" ) ||
+      //  ( $("#select_x").val()==="no_sh2" & $("#select_x").val()==="publication" ) ){
+      //      showAlert("Chart not available", "danger");
+      //  }
+
       const select_x = $('#select_x').val();
       const select_y = $('#select_y').val();
       const url_mask = "{% url 'get_csv' 123 456 %}".replace(/123/, select_x.toString() )
                                                     .replace(/456/, select_y.toString() );
       barchart(url_mask, width, height);
 
-      $('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask);
+      //$('#proba').html( $('#select_x').val() + $('#select_y').val() + document.getElementById('chartArea').clientWidth + url_mask);
     
     });      
 

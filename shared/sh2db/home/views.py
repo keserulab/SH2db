@@ -4,6 +4,7 @@ from django.http import HttpResponse
 
 from protein.models import Protein, Domain, ProteinSegment
 from residue.models import Residue, ResidueGenericNumber
+from common.models import Publication
 from common.alignment import Alignment
 from django.db.models import Count
 
@@ -62,7 +63,13 @@ def get_csv(request, x, y):
                 except KeyError:
                     counts[list(row.values())[1]] = 1
 
-            headerline.append('proteins')
+            # Sort dictionary by keys
+            counts2={}
+            for i in sorted(counts):
+                counts2[i]=counts[i]
+            counts=counts2
+
+            headerline.append('count')
             writer.writerow(headerline)
             for row in counts:
                 writer.writerow([row, counts[row]])
@@ -72,29 +79,83 @@ def get_csv(request, x, y):
         else:
             lookup_string = {'family': 'family__name',
                             'species': 'species__latin_name'}[x]
-            lookup = Protein.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+            lookup = Protein.objects.all().values(lookup_string).order_by(lookup_string).annotate(count_items=Count('id'))
             
-        headerline.append('proteins')
+        headerline.append('count')
     elif y=='structure':
-        if x=='year':
-            lookup_string = {'year': 'publication__year'}[x]
-            lookup = Structure.objects.all().values(lookup_string).annotate(count_items=Count('id'))
-        else:
-            lookup_string = {'family': 'domain__parent__isoform__protein__family__name',
-                            'species': 'domain__parent__isoform__protein__species__latin_name'}[x]
-            groupby_string = 'chain__structure__id'
-            lookup = StructureDomain.objects.all().values(lookup_string).annotate(count_items=Count(groupby_string))
+        if x=='no_sh2':
+            lookup_string = {'no_sh2': 'chain__structure'}[x]
+            lookup = StructureDomain.objects.all().values(lookup_string).annotate(count_items=Count('id'))
 
-        headerline.append('structures')
+            counts={}
+            for row in lookup:
+                try:
+                    counts[list(row.values())[1]] += 1
+                except KeyError:
+                    counts[list(row.values())[1]] = 1
+
+            # Sort dictionary by keys
+            counts2={}
+            for i in sorted(counts):
+                counts2[i]=counts[i]
+            counts=counts2
+
+            headerline.append('count')
+            writer.writerow(headerline)
+            for row in counts:
+                writer.writerow([row, counts[row]])
+
+            return response
+
+        else:
+            lookup_string = {'year': 'publication__year',
+                            'family': 'protein__family__name',
+                            'species': 'protein__species__latin_name'}[x]
+            lookup = Structure.objects.all().values(lookup_string).order_by(lookup_string).annotate(count_items=Count('id'))
+
+        headerline.append('count')
     elif y=='structuredomain':
         lookup_string = {'family': 'domain__parent__isoform__protein__family__name',
                                 'year': 'chain__structure__publication__year',
                                 'species': 'domain__parent__isoform__protein__species__latin_name'}[x]
-        lookup = StructureDomain.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+        lookup = StructureDomain.objects.all().values(lookup_string).order_by(lookup_string).annotate(count_items=Count('id'))
 
-        headerline.append('structuredomains')
+        headerline.append('count')
     elif y=='publication':
-        pass
+        if x=='no_sh2':
+            lookup_string = {'no_sh2': 'chain__structure__publication'}[x]
+            lookup = StructureDomain.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+
+            counts={}
+            for row in lookup:
+                try:
+                    counts[list(row.values())[1]] += 1
+                except KeyError:
+                    counts[list(row.values())[1]] = 1
+
+            # Sort dictionary by keys
+            counts2={}
+            for i in sorted(counts):
+                counts2[i]=counts[i]
+            counts=counts2
+
+            headerline.append('count')
+            writer.writerow(headerline)
+            for row in counts:
+                writer.writerow([row, counts[row]])
+
+            return response
+
+        elif x=='family' or x=='species': # NOT WORKING YET!!
+            lookup_string = {'family': 'protein__family__name',
+                            'species': 'protein__species__latin_name'}[x]
+            #lookup = Structure.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+            headerline.append('count')
+
+        else:
+            lookup_string = {'year': 'year'}[x]
+            lookup = Publication.objects.all().values(lookup_string).order_by(lookup_string).annotate(count_items=Count('id'))
+            headerline.append('count')
 
     writer.writerow(headerline)
     for row in lookup:
@@ -110,9 +171,6 @@ def get_csv(request, x, y):
 def charts(request):
     return render(request, 'charts.html')
 
-def faq(request):
-    return render(request, 'faq.html')
-
-def contact(request):
-    return render(request, 'contact.html')
+def source(request):
+    return render(request, 'source.html')
 
