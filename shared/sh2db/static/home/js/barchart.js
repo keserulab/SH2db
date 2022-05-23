@@ -18,7 +18,7 @@ function barchart(url_mask, width, height){
     // List of groups = species here = value of the first column called group -> I show them on the X axis
     const groups = data.map(d => d.group)
 
-    const max_y = d3.max(data.map(d => d.count).values())
+    const max_y = d3.max(data.map(d => parseInt(d.count) ) )
 
     console.log(groups)
 
@@ -34,7 +34,7 @@ function barchart(url_mask, width, height){
 
     // Add Y axis
     const y = d3.scaleLinear()
-    .domain([0, 1.1 * max_y])
+    .domain([0,  1.1 * max_y])
     .range([ height, 0 ]);
     svg.append("g")
     .call(d3.axisLeft(y));
