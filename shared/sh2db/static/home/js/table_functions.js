@@ -40,6 +40,7 @@ function alignment_download () {
                     dataCSV += "\n";
                 }
             })
+            dataCSV += consensus_symbols("#alignment_table");
             var hiddenElement = document.createElement('a');  
             hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(dataCSV);  
             hiddenElement.target = '_blank';  
@@ -47,6 +48,123 @@ function alignment_download () {
             hiddenElement.click();
         }
     });
+}
+
+function mutation_symbols (table_id, domain) {
+    var array = transposed_table(table_id, domain)
+    var mutation_symbols = "<tr>";
+    $(array).each(function(nums, vals) {
+        if (vals.length<2 || (vals.includes("-") && vals.length==2) ) {
+            mutation_symbols+= "<td></td>";
+        }
+        else {
+             mutation_symbols+= "<td class='mutation'>*</td>";
+        }
+    })
+    mutation_symbols+="</tr>"
+    $(table_id + " tr." + domain + ":last").after(mutation_symbols);
+}
+
+function transposed_table (table_id, target_class) {
+    var dataArray = [];
+    $(table_id + " tr").each(function() {
+        if ($(this).hasClass(target_class)) {
+            var dataRow = [];
+            $(this).find("td").each(function(key, cell) {
+                dataRow.push($(cell).text());
+            })
+            dataArray.push(dataRow);
+        }
+    })
+    var transposedArray = [];
+    for (var i=0; i<dataArray[0].length; i++) {
+        var row = [];
+        for (var j=0; j<dataArray.length; j++) {
+            if (dataArray[j][i].length==1 && !row.includes(dataArray[j][i])) {
+                row.push(dataArray[j][i]);
+            }
+        }
+        transposedArray.push(row);
+    }
+    return transposedArray
+}
+
+function consensus_symbols (table_id) {
+    var transposedArray = transposed_table (table_id, "alt_selected")
+    var consensus_symbols = "";
+    
+    $(transposedArray).each(function(nums, vals) {
+        skiprow = false;
+        gap = false;
+        var symbol = "";
+        if (vals.length==1 && vals[0]!="-") {
+            consensus_symbols += "*,";
+        }
+        else {
+            if (vals.includes("-") || vals.length==0) {
+                consensus_symbols += ",";
+            }
+            else {
+                consensus_symbols += find_consensus_set(vals) + ",";
+            }
+        }
+    })
+    return consensus_symbols;
+}
+
+function find_consensus_set (array) {
+    var colon_sets = [["S", "T", "A"],
+                      ["N", "E", "Q", "K"],
+                      ["N", "H", "Q", "K"],
+                      ["N", "D", "E", "Q"],
+                      ["Q", "H", "R", "K"],
+                      ["M", "I", "L", "V"],
+                      ["M", "I", "L", "F"],
+                      ["H", "Y"],
+                      ["F", "Y", "W"]];
+    var dot_sets = [["C", "S", "A"],
+                    ["A", "T", "V"],
+                    ["S", "A", "G"],
+                    ["S", "T", "N", "K"],
+                    ["S", "T", "P", "A"],
+                    ["S", "G", "N", "D"],
+                    ["S", "N", "D", "E", "Q", "K"],
+                    ["N", "D", "E", "Q", "H", "K"],
+                    ["N", "E", "Q", "H", "R", "K"],
+                    ["F", "V", "L", "I", "M"],
+                    ["H", "F", "Y"]];
+    
+    for (j=0; j<colon_sets.length; j++) {
+        var present = false;
+        for (i=0; i<array.length; i++) {
+            if (!colon_sets[j].includes(array[i])) {
+                present = false;
+                break;
+            }
+            else {
+                present = true;
+            }
+        }
+        if (present) {
+            return ":";
+        }
+    }
+    for (j=0; j<dot_sets.length; j++) {
+        var present = false;
+        for (i=0; i<array.length; i++) {
+            if (!dot_sets[j].includes(array[i])) {
+                present = false;
+                break;
+            }
+            else {
+                present = true;
+            }
+        }
+        if (present) {
+            return ".";
+        }
+    }
+    return "";
 }
 
 function structure_download () {
