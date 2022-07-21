@@ -51,25 +51,33 @@
             </tr>
             {% endif %}
             {% for domain_residues in residues %}
-            {% if domain_residues.1.parent %}
-            <tr class="structure data-row">
-            {% else %}
-            <tr class="data-row">
-            {% endif %}
-                {% if checkbox %}
-                <td><input type="checkbox" class="alt"></td>
-                {% endif %}
-                <td class="protein" style='padding: 5px;'>{{ domain_residues.0 }}</td>
-                <td class="domain" style='padding: 5px;'>{{ domain_residues.1 }}</td>
-                {% for res in domain_residues|slice:"2:" %}
-                    {% if res.amino_acid %}
-                    <td class='residue res-color-{{res.amino_acid}} res_{{ forloop.counter }}' title='{{res}}
-{{res.amino_acid_three_letter}}'>{{ res.amino_acid }}</td>
+                {% if domain_residues.1.parent %}
+                    {% if domain_residues.1.domain_type.slug == "N" %}
+                    <tr class="structure data-row N">
                     {% else %}
-                    <td class='residue res_{{ forloop.counter }}'>-</td>
+                    <tr class="structure data-row C">
                     {% endif %}
-                {% endfor %}
-            </tr>
+                {% else %}
+                    {% if domain_residues.1.slug == "N" %}
+                    <tr class="data-row N">
+                    {% else %}
+                    <tr class="data-row C">
+                    {% endif %}
+                {% endif %}
+                    {% if checkbox %}
+                    <td><input type="checkbox" class="alt"></td>
+                    {% endif %}
+                    <td class="protein" style='padding: 5px;'>{{ domain_residues.0 }}</td>
+                    <td class="domain" style='padding: 5px;'>{{ domain_residues.1 }}</td>
+                    {% for res in domain_residues|slice:"2:" %}
+                        {% if res.amino_acid %}
+                        <td class='residue res-color-{{res.amino_acid}} res_{{ forloop.counter }}' title='{{res}}
+{{res.amino_acid_three_letter}}'>{{ res.amino_acid }}</td>
+                        {% else %}
+                        <td class='residue res_{{ forloop.counter }}'>-</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
             {% endfor %}
         </tbody>
     </table>
