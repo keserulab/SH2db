@@ -183,6 +183,30 @@ function structure_download () {
     });
 }
 
+function pymol_download () {
+    $("#pymol_download_button").click(function() {
+        var structures = [];
+        var residues = [];
+        if ($(".structure.alt_selected").length===0) {
+            showAlert("No structure entries selected", "danger");
+        }
+        else if ($(".residue_checkbox_selected").length===0) {
+            showAlert("No residues selected", "danger");
+        }
+        else {
+            $(".structure.alt_selected").each(function() {
+                structures.push($(":nth-child(3)", this).text());
+            });
+            $(".residue_checkbox_selected").each(function() {
+                residues.push(this).text();   // itt kéne nagyon a segítség: hogy tudom a *residues*-ba összegyűjteni a kiválasztott residue_checkboxok id-it?
+            });
+            // PymolDownload(structures.join(','));
+            window.location.href = '/structure/pymoldownload?ids='+structures.join(",")+'?residues='+residues.join(",");
+        }
+    });
+}
+
+
 function StructureDownload (structures) {
     $.ajax({
         'url': '/structure/download',

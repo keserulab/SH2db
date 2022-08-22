@@ -7,15 +7,35 @@
 <div class="row">
 	<div class="col-md-12">
 	
-    <p>Our research group has been established in 2013 by György M. Keserű on the basis of a preceding synthetic organic chemistry group. Since then we established national and international, government and industry founded research programs focusing on two major topics:</p>
-    <ul>
-        <li>fragment based approaches in the lead discovery of GPCR and kinase targets</li>
-        <li>chemical process development for small molecule active pharmaceutical ingredients</li>
-    </ul>
+    <p>SH2db is an open-source project, maintained by the <a href="http://medchem.ttk.hu/" target="_blank">Medicinal Chemistry Research Group</a> 
+        (<a href="https://twitter.com/keserulab" target="_blank">@keserulab</a>) in Budapest, Hungary.
+    </p>
+    <p>
+        You can contribute to the project via GitHub:
+    </p>
+    <object type="image/svg+xml" data="https://gh-card.dev/repos/pszgaspar/sh2db.svg?link_target=_blank"></object>
 
-    <br>
+    <br><br>
+    <p>
+        You can contact us with any questions or suggestions regarding SH2db at sh2db
+        <img align="bottom" width="13" height="15" alt=""  style="border-width: 0px;" src="{% static 'home/images/kukac.png' %}">ttk
+        <img align="bottom" width="3" height="15" alt=""  style="border-width: 0px;"src="{% static 'home/images/potty2.png' %}">hu</p>
+    </p>
 	
-	</div>
 
+    <a href="http://medchem.ttk.hu/" target="_blank">
+        <img src="{% static 'home/images/medchem.png' %}" height="50" alt="img" style="display:inline;"></img>
+    </a>
+    <a href="http://www.ttk.hu/en/" target="_blank">
+        <img src="{% static 'home/images/ttk.jpg' %}" height="50" alt="img" style="display:inline;"></img>
+    </a>
+    
+	</div>
  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	document.getElementById("navbar.source").classList.add('active');
+</script>
 {% endblock %}

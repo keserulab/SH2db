@@ -13,6 +13,7 @@ from io import StringIO, BytesIO
 from Bio.PDB import PDBIO, PDBParser
 import zipfile
 
+from datetime import datetime
 
 def structuredownload(request):
     # if request.is_ajax and request.method == 'GET':
@@ -28,9 +29,31 @@ def structuredownload(request):
             file_name = '{}_{}.pdb'.format(structure[0].domain.isoform.protein.name, structure[0].domain.name)
             backup_zip.writestr(file_name, io.getvalue())
 
+
+    now = datetime.now()
+    dt_string = now.strftime("%Y%m%d%H%M%S")
+
+
     response = HttpResponse(zip_io.getvalue(), content_type='application/x-zip-compressed')
-    response['Content-Disposition'] = 'attachment; filename=%s' % 'SH2DB_structures' + ".zip"
+    response['Content-Disposition'] = 'attachment; filename=%s' % 'SH2DB_structures' + dt_string + ".zip"
     response['Content-Length'] = zip_io.tell()
+    return response
+
+def pymoldownload(request):
+    structures = request.GET['ids'].split(',')
+    domains = Domain.objects.filter(name__in=structures)
+    structure_domains = [i.structure_domain.all() for i in domains]
+    residues = request.GET['residues'].split(',')
+
+    ## dummy function
+    io = StringIO(str([structure in structures],[residue in residues]))
+
+    now = datetime.now()
+    dt_string = now.strftime("%Y%m%d%H%M%S")
+
+    response = HttpResponse(io.getvalue(), content_type='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s' % 'SH2DB_pymolsession' + dt_string + ".zip"
+    response['Content-Length'] = io.tell()
     return response
 
 
@@ -73,6 +96,12 @@ def structure(request, pdb_code):
 
         alignment = Alignment(domains)
         segments, gns, residues = alignment.align_domain_residues()
+
+        segmentlist=[]
+        for segment,colnum in segments.items():
+            for i in range(colnum):
+                segmentlist.append(segment.slug)
+        gnzips = [x+y for x,y in zip(segmentlist,gns)]
         
     except Structure.DoesNotExist:
         return render(request, 'error.html')
@@ -80,7 +109,8 @@ def structure(request, pdb_code):
     return render(request, 'structure.html', {'structure' : structure, 'chains': chains, 'structuredomains' : structuredomains, 
                                             'protein': protein, 'domains': domains,
                                             'proteinsegments': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues,
-                                            'gns': gns, 'segments': segments, 'parent_domains': parent_domains, 'checkbox': True})
+                                            'gns': gns, 'segments': segments, 'parent_domains': parent_domains, 'checkbox': True,
+                                            'gnzips': gnzips})
     
 def pymol_session(request, structuredomains, residues):
     return "asdasd"
