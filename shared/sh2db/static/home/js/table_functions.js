@@ -76,6 +76,9 @@ function transposed_table (table_id, target_class) {
             dataArray.push(dataRow);
         }
     })
+    if (dataArray.length===0) {
+        return []
+    }
     var transposedArray = [];
     for (var i=0; i<dataArray[0].length; i++) {
         var row = [];
