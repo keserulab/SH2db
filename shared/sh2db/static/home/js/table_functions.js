@@ -208,7 +208,7 @@ function pymol_download () {
                 structures.push($(":nth-child(3)", this).text());
             });
             $(".residue_checkbox.alt_selected").each(function() {
-                residues.push(this).id();   // itt kéne nagyon a segítség: hogy tudom a *residues*-ba összegyűjteni a kiválasztott residue_checkboxok id-it?
+                residues.push($(this).attr("id"));   // itt kéne nagyon a segítség: hogy tudom a *residues*-ba összegyűjteni a kiválasztott residue_checkboxok id-it?
             });
             // PymolDownload(structures.join(','));
             window.location.href = '/structure/pymoldownload?ids='+structures.join(",")+'?residues='+residues.join(",");
