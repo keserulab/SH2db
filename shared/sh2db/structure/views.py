@@ -52,7 +52,7 @@ def pymoldownload(request):
     dt_string = now.strftime("%Y%m%d%H%M%S")
 
     response = HttpResponse(io.getvalue(), content_type='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename=%s' % 'SH2DB_pymolsession' + dt_string + ".zip"
+    response['Content-Disposition'] = 'attachment; filename=%s' % 'SH2DB_pymolsession' + dt_string + ".txt"
     response['Content-Length'] = io.tell()
     return response
 
