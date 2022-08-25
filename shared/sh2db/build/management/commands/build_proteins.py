@@ -167,7 +167,7 @@ class Command(BaseBuild):
     def parse_alignment_file(self):
         scheme = ResidueNumberingScheme.objects.get(short_name='GN')
         with open(os.sep.join([settings.DATA_DIR, 'table_from_alignment_with_pdbs_0917.csv']), newline='') as csvfile:
-            structure_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            structure_reader = csv.reader(csvfile, delimiter=';', quotechar='|')
             for i, row in enumerate(structure_reader):
                 if i==1:
                     self.gns = row[2:]
@@ -175,7 +175,6 @@ class Command(BaseBuild):
                         if gn not in ['',' ']:
                             segment = ProteinSegment.objects.get(name=gn[:-2])
                             gn = ResidueGenericNumber.objects.get_or_create(label=gn, protein_segment=segment, scheme=scheme)
-
                 if row[1]=='seq':
                     self.protein_seqs[row[0]] = ''.join(row[2:]).replace('-','')
                     self.protein_seqs_aligned[row[0]] = row[2:]
