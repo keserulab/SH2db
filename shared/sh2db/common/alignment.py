@@ -1,4 +1,5 @@
 from residue.models import Residue
+from protein.models import ProteinSegment
 
 class Alignment():
     def __init__(self, domains):
@@ -7,19 +8,14 @@ class Alignment():
     def align_domain_residues(self):
         residues = []
         for d in self.domains:
-            residues.append(Residue.objects.filter(domain=d))
+            residues.append(Residue.objects.filter(domain=d).prefetch_related('protein_segment'))
         segments = {}
         gns = {}
+        segs_to_keep = []
         for resis in residues:
-            segs = resis.order_by('protein_segment__id').distinct('protein_segment').values_list('protein_segment__slug', flat=True)
+            segs = ProteinSegment.objects.all()
             for seg in segs:
-                resis_in_seg = resis.filter(protein_segment__slug=seg)
-                seg = resis_in_seg[0].protein_segment
-                if seg not in segments:
-                    segments[seg] = len(resis_in_seg)
-                else:
-                    if len(resis_in_seg)>segments[seg]:
-                        segments[seg] = len(resis_in_seg)
+                resis_in_seg = resis.filter(protein_segment=seg)
                 if seg not in gns:
                     gns[seg] = []
                 for res in resis_in_seg:
@@ -29,6 +25,11 @@ class Alignment():
                             break
                     elif res.generic_number.label not in gns[seg]:
                         gns[seg].append(res.generic_number.label)
+                gns[seg] = sorted(gns[seg])
+                if len(gns[seg])>0:
+                    segs_to_keep.append(seg)
+        for seg in list(gns.keys()-segs_to_keep):
+            del gns[seg]
 
         gns_out = []
         for seg, gns_list in gns.items():
@@ -37,6 +38,7 @@ class Alignment():
                 gns_out += [str(i) for i in sorted(gns_list)]
             else:
                 gns_out += gns_list
+            segments[seg] = len(gns_list)
 
         aligned_domains = []
         for resis in residues:

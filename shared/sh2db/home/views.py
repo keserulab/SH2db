@@ -24,8 +24,6 @@ def search(request):
 
     alignment = Alignment(domains)
     segments, gns, residues = alignment.align_domain_residues()
-    
-    
 
     return render(request, 'search.html', { 'domains': domains,
                                             'proteinsegments': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues,
