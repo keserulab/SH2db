@@ -117,7 +117,7 @@ class Command(BaseBuild):
 
     def parse_alignment_file(self):
         with open(os.sep.join([settings.DATA_DIR, 'table_from_alignment_with_pdbs_0917.csv']), newline='') as csvfile:
-            structure_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            structure_reader = csv.reader(csvfile, delimiter=';', quotechar='|')
             for i, row in enumerate(structure_reader):
                 if i==1:
                     self.gns = row[2:]

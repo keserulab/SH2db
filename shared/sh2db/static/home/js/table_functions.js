@@ -226,37 +226,43 @@ function table_filter () {
     for (var i=1; i<$(".data-row:first > .residue").length+1; i++) {
         fill_filter(".res_"+i.toString(), "#filter_"+i.toString())
     }
-    run_filter();
+    $("select").change(function() {
+        run_filter();
+    });
+
 }
 
 function run_filter () {
-    $("select").change(function() {
-        var selected = $(this).find(":selected").text();
-        if ($(this).attr("id")==="protein_filter")  {
-            var column = $(".protein");
+    var selected_filters = {};
+    $(".form-select").each(function (key, val) {
+        var selected_value = $(val).find(":selected").text();
+        if ($(val).find(":selected").text()!=="") {
+            selected_filters[$(val).attr("id")] = selected_value;
         }
-        else if ($(this).attr("id")==="domain_filter") {
-            var column = $(".domain");
+    })
+    $(".data-row").hide();
+    var rows_to_show = [];
+    $(".data-row").each(function (i, j) {
+        if ($("#structure_toggle_button").hasClass("left_position") && $(j).hasClass("structure")) {
+            return;       
         }
-        else {
-            var column = $(".res_"+$(this).attr("id").split("_")[1]);
-        }
-        $(column).each(function (key, val) {
-            if (selected.toString()!==$(val).text()) {
-                $(this).parent().hide();
+        var show = true;
+        for (var [key, val] of Object.entries(selected_filters)) {
+            if (key.startsWith("filter")) {
+                key = key.replace("filter","res")
             }
-            if (selected.toString()==="") {
-                if ($("#structure_toggle_button").hasClass("left_position")) {
-                    if (!$(this).parent().hasClass("structure")) {
-                        $(this).parent().show();
-                    }
-                }
-                else {
-                    $(this).parent().show();
-                }
+            else {
+                key = key.split('_')[0];
             }
-        })
-    });
+            if ($(j).find("."+key).text()!==val) {
+                show = false;
+                return;
+            }
+        }
+        if (show) {
+            $(j).show();
+        }
+    })
 }
 
 function fill_filter (td_class, filter_id) {
