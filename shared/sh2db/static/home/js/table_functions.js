@@ -22,12 +22,6 @@ function checkbox_selection () {
     });
 }
 
-function residue_checkbox_selection () {
-    $("#alignment_table .residue_checkbox").click(function(event) {
-        $(this).toggleClass("alt_selected");
-    });
-}
-
 function alignment_download () {
     $("#alignment_download_button").click(function() {
         var dataCSV = '';
@@ -199,22 +193,22 @@ function pymol_download () {
         if ($(".structure.alt_selected").length===0) {
             showAlert("No structure entries selected", "danger");
         }
-        else if ($(".residue_checkbox.alt_selected").length===0) {
+        else if ($(".residue_checkbox :checkbox:checked").length===0) {
             showAlert("No residues selected", "danger");
         }
+
         else {
             $(".structure.alt_selected").each(function() {
                 structures.push($(":nth-child(3)", this).text());
             });
-            $(".residue_checkbox.alt_selected").each(function() {
-                residues.push($(this).attr("id"));   // itt kéne nagyon a segítség: hogy tudom a *residues*-ba összegyűjteni a kiválasztott residue_checkboxok id-it?
+            $(".residue_checkbox :checkbox:checked").each(function() {
+                residues.push($(this).attr('id'));
             });
             // PymolDownload(structures.join(','));
-            window.location.href = '/structure/pymoldownload?ids='+structures.join(",")+'?residues='+residues.join(",");
+            window.location.href = '/structure/pymoldownload?ids='+structures.join(",")+'&residues='+residues.join(",");
         }
     });
 }
-
 
 function StructureDownload (structures) {
     $.ajax({

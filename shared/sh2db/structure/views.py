@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.template.loader import render_to_string
 from django.views.generic import View
 
@@ -14,6 +14,45 @@ from Bio.PDB import PDBIO, PDBParser
 import zipfile
 
 from datetime import datetime
+
+import subprocess
+from random import randint
+import os
+
+def pymoldownload(request):
+    structures = request.GET['ids'].split(',')
+    domains = Domain.objects.filter(name__in=structures)
+    structure_domains = [i.structure_domain.all() for i in domains]
+    residues = request.GET['residues'].split(',')
+
+    pdbnames=[]
+    for structure_domain in structure_domains:
+        pdbname = 'structure'+str(randint(0,10000000))+'.pdb'
+        with open(pdbname, 'w') as f:
+            f.write(structure_domain[0].pdbdata.pdb)
+        pdbnames.append(pdbname)
+
+    ## FOR DEBUGGING
+    io = BytesIO()
+
+    ## GENERATE PYMOL SESSION
+    outfilename = 'pymol_session'+str(randint(0,10000000))+'.pse'
+    result = subprocess.run(["python2.7", os.getcwd()+"/structure/pymol_session.py", outfilename, 
+                                str([ pdbname for pdbname in pdbnames]), str(residues)], capture_output=True)
+
+    for pdbname in pdbnames:
+        os.remove(pdbname)
+
+    ## FOR DEBUGGING
+    io.write(result.stdout)
+
+    response = FileResponse( open(outfilename, "rb"), as_attachment=True)#, filename=outfilename) 
+
+    ## FOR DEBUGGING
+    #response = HttpResponse(io.getvalue(), content_type='application/x-zip-compressed')
+    #response['Content-Disposition'] = 'attachment; filename=%s' % outfilename
+    #response['Content-Length'] = io.tell()
+    return response
 
 def structuredownload(request):
     # if request.is_ajax and request.method == 'GET':
@@ -37,23 +76,6 @@ def structuredownload(request):
     response = HttpResponse(zip_io.getvalue(), content_type='application/x-zip-compressed')
     response['Content-Disposition'] = 'attachment; filename=%s' % 'SH2DB_structures' + dt_string + ".zip"
     response['Content-Length'] = zip_io.tell()
-    return response
-
-def pymoldownload(request):
-    structures = request.GET['ids'].split(',')
-    domains = Domain.objects.filter(name__in=structures)
-    structure_domains = [i.structure_domain.all() for i in domains]
-    residues = request.GET['residues'].split(',')
-
-    ## dummy function
-    io = StringIO(str([structure in structures],[residue in residues]))
-
-    now = datetime.now()
-    dt_string = now.strftime("%Y%m%d%H%M%S")
-
-    response = HttpResponse(io.getvalue(), content_type='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename=%s' % 'SH2DB_pymolsession' + dt_string + ".txt"
-    response['Content-Length'] = io.tell()
     return response
 
 
@@ -112,8 +134,6 @@ def structure(request, pdb_code):
                                             'gns': gns, 'segments': segments, 'parent_domains': parent_domains, 'checkbox': True,
                                             'gnzips': gnzips})
     
-def pymol_session(request, structuredomains, residues):
-    return "asdasd"
 
 def chain(request, pdb_code, chain_ID):
     try:

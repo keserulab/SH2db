@@ -105,6 +105,9 @@
                 stage.toggleFullscreen();
             });
             
+            // Uncheck all checkboxes on reload
+            $(':checkbox').prop('checked',false);
+
             checkbox_selection();
             residue_checkbox_selection();
             alignment_download();

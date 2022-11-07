@@ -18,10 +18,10 @@
         </thead>
         <tbody>
             {% if checkbox %}
-            <tr>
+            <tr class='residue_checkbox' >
                 <td></td>
                 {% for residue in residues.0 %}
-                    <td class='residue_checkbox' style='padding: 5px;'><input type="checkbox" ></td>
+                    <td style='padding: 5px;' ><input type="checkbox"  id="{{ residue }}"></td>
                 {% endfor %}
             </tr>
             {% endif %}
