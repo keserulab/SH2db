@@ -15,7 +15,11 @@
 <div class="row">
 	<div class="col-md-6">
 	
+    {% if not structure.pdb_code %}
+    <h2>AlphaFold model {{ structure.protein.accession }}-AF
+    {% else %}
 	<h2>PDB structure <a href="https://www.rcsb.org/structure/{{ structure.pdb_code }}" target="_blank">{{ structure.pdb_code }}</a>
+    {% endif %}
         {% if chain %}
             - chain {{ chain.chain_ID }}
         {% endif %}
@@ -39,9 +43,11 @@
             </a>
         </p>
     {% else %}
+        {% if structure.pdb_code %}
         <p>Publication: 
             {{ structure.publication.title }} (to be published)
         </p>
+        {% endif %}
     {% endif %}
     
     <h4>Domains: 
@@ -109,7 +115,6 @@
             $(':checkbox').prop('checked',false);
 
             checkbox_selection();
-            residue_checkbox_selection();
             alignment_download();
             structure_download();
             pymol_download();

@@ -15,7 +15,7 @@ import pprint
 import urllib
 import json
 from datetime import datetime
-from Bio.PDB import Polypeptide
+from Bio.PDB import Polypeptide, PDBParser
 
 
 class Command(BaseBuild):
@@ -27,6 +27,7 @@ class Command(BaseBuild):
     protein_seqs_aligned = {}
     gns = []
     pdbs_path = os.sep.join([settings.DATA_DIR, 'structures'])
+    af_path = os.sep.join([settings.DATA_DIR, 'models'])
     unnatural_amino_acids = {'Mse':'M', 'Cso':'C', 'Cas':'C'}
 
     def add_arguments(self, parser):
@@ -56,6 +57,9 @@ class Command(BaseBuild):
 
         # Residues
         self.build_structure_residues()
+
+        # Models
+        self.build_models()
 
     def build_structure_residues(self):
         for key, val in self.protein_seqs_aligned.items():
@@ -213,6 +217,29 @@ class Command(BaseBuild):
         authors = ', '.join(authors)
         pub, created = Publication.objects.get_or_create(journal=journal, title=data['title'], authors=authors, year=data['year'], reference=doi)
         return pub
+
+    def build_models(self):
+        af_type, created = StructureType.objects.get_or_create(slug='AF', name='Alphafold')
+        month_dict = {'JAN':'01', 'FEB':'02', 'MAR':'03', 'APR':'04', 'MAY':'05', 'JUN':'06', 'JUL':'07', 'AUG':'08', 'SEP':'09', 'OCT':'10', 'NOV':'11', 'DEC':'12'}
+        for f in os.listdir(self.af_path):
+            this_file = os.sep.join([self.af_path, f])
+            accession, _ = f.split('.')
+            print(accession)
+            protein = Protein.objects.get(accession=accession)
+            with open(this_file, 'r') as f_handle:
+                lines = f_handle.readlines()
+            day, month, year = lines[0].split('HEADER')[1].strip().split('-')
+            model_date = '20{}-{}-{}'.format(year, month_dict[month], day)
+            structure, created = Structure.objects.get_or_create(pdb_code=None, publication_date=model_date, publication=None, resolution=None,
+                                                                 structure_type=af_type, protein=protein)
+            chain, created = Chain.objects.get_or_create(chain_ID='A', structure=structure)
+            domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True)
+            # p = PDBParser()
+            # model = p.get_structure('af', this_file)[0]['A']
+            pdbdata = self.build_pdbdata(this_file)
+            for domain in domains:
+                structdomain, created = StructureDomain.objects.get_or_create(chain=chain, domain=domain, pdbdata=pdbdata)
+
 
     def pdb_request_by_pdb(self, pdb):
         data = {}

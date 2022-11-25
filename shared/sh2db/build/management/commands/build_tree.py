@@ -26,6 +26,7 @@ class Command(BaseBuild):
         pass
 
     def handle(self, *args, **options):
+        self.create_fasta_file()
         aln = AlignIO.read('./proteins_annotated_segments.fasta', 'fasta')
         calculator = DistanceCalculator('blosum62')
         dm = calculator.get_distance(aln)
@@ -43,12 +44,7 @@ class Command(BaseBuild):
         # t = Tree(tree)
         # t.show()
 
-
-
-
-
-
-    def create_fasta_file():
+    def create_fasta_file(self):
         domains = Domain.objects.filter(parent__isnull=True).order_by('isoform', 'domain_type', '-parent', 'name')
 
         alignment = Alignment(domains)
@@ -61,7 +57,10 @@ class Command(BaseBuild):
 
         out = ''
         for line in residues:
-            this_header = '>{}-{}'.format(line[0], line[1])
+            if line[1].name=='N-terminal':
+                this_header = '>{}'.format(line[0])
+            else:
+                this_header = '>{}-C'.format(line[0])
             this_seq = ''
             full_seq = ''
             for j in line:

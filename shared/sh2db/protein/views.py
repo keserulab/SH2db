@@ -33,7 +33,7 @@ def protein(request, name):
 
     alignment = Alignment(domains)
     segments, gns, residues = alignment.align_domain_residues()
-
+    print('a')
     structures = []
     for s in structuredomains:
         if s.chain.structure not in structures:
