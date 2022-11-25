@@ -1,6 +1,6 @@
 {% extends "./navbar.html" %}
 {% load static %}
-{% load protein_tags %}
+{% load common_tags %}
 
 
 {% block title %}SH2DB - {{ protein.name }} protein entry{% endblock %}
@@ -20,7 +20,7 @@
     
     <h2>{{ protein.name }}</h2>
     <br>
-    <p>Recommended name: {{fullname}}</p>
+    <p>Recommendedddd name: {{fullname}}</p>
     <p>Gene name: {{protein.name}}</p>
     <p>No. of SH2 domains: {{ domains | length }}</p>
     <p>Uniprot: <a href="https://www.uniprot.org/uniprot/{{ protein.accession }}" target="_blank">{{ protein.accession }}</a></p>
@@ -91,9 +91,17 @@
                     <tbody>
                     {% for structure in structures %}
                         <tr>
+                            {% if not structure.pdb_code %}
+                            <td><a href="/structure/{{ structure.protein.accession }}-AF">{{ structure.protein.accession }}-AF</a></td>
+                            {% else %}
                             <td><a href="/structure/{{ structure.pdb_code }}">{{ structure.pdb_code }}</a></td>
+                            {% endif %}
                             <td>{{ structure.structure_type.name }}</a></td>
+                            {% if not structure.resolution %}
+                            <td>-</td>
+                            {% else %}
                             <td>{{ structure.resolution }}</td>
+                            {% endif %}
                             <td>
                             {% for domain in structure.chain.all.0.structure_domain.all %}
                                 {{domain.domain.domain_type.name|linebreaks}}
@@ -105,8 +113,13 @@
                             {% endfor %}
                             </td>
                             <td>{{ structure.publication_date|date:"Y-m-d" }}</td>
+                            {% if not structure.publication %}
+                            <td>-</td>
+                            <td>-</td>
+                            {% else %}
                             <td>{{ structure.publication.authors|authors_short }}</td>
-                            <td><a href="#">{{ structure.publication.reference.index }}</a></td>
+                            <td><a href="{{ structure.publication.reference.index }}">{{ structure.publication.reference.index }}</a></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

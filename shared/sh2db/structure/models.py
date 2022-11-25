@@ -2,9 +2,9 @@ from django.db import models
 
 
 class Structure(models.Model):
-    pdb_code = models.CharField(max_length=4, unique=True)
+    pdb_code = models.CharField(max_length=4, unique=True, null=True)
     publication_date = models.DateField()
-    publication = models.ForeignKey('common.Publication', on_delete=models.CASCADE)
+    publication = models.ForeignKey('common.Publication', on_delete=models.CASCADE, null=True)
     resolution = models.DecimalField(max_digits=5, decimal_places=3, null=True)
     structure_type = models.ForeignKey('StructureType', on_delete=models.CASCADE)
     protein = models.ForeignKey('protein.Protein', on_delete=models.CASCADE, related_name='structure')

@@ -95,38 +95,41 @@ def zipped_pdb(request, structuredomains):
     return resp
 
 def structure(request, pdb_code):
-    try:
+    # try:
+    if pdb_code.endswith('-AF'):
+        structure = Structure.objects.get(protein__accession=pdb_code.split('-')[0], pdb_code__isnull=True)
+    else:
         structure = Structure.objects.get(pdb_code=pdb_code)
-        chains = Chain.objects.filter(structure=structure)
-        structuredomains = StructureDomain.objects.filter(chain__structure=structure)
+    chains = Chain.objects.filter(structure=structure)
+    structuredomains = StructureDomain.objects.filter(chain__structure=structure)
 
-        protein = structuredomains[0].domain.isoform.protein
-        domains=[]
-        for i in structuredomains:
-            if i.domain not in domains:
-                domains.append(i.domain)
+    protein = structuredomains[0].domain.isoform.protein
+    domains=[]
+    for i in structuredomains:
+        if i.domain not in domains:
+            domains.append(i.domain)
 
-        proteinsegments = ProteinSegment.objects.all()
-        residuegenericnumbers = ResidueGenericNumber.objects.all()
-        residues = Residue.objects.filter(domain__in=domains)
+    proteinsegments = ProteinSegment.objects.all()
+    residuegenericnumbers = ResidueGenericNumber.objects.all()
+    residues = Residue.objects.filter(domain__in=domains)
 
-        parent_domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True).order_by('-domain_type__slug')
-        if len(parent_domains)==1:
-            domains = list(parent_domains) + [i.domain for i in structuredomains]
-        else:
-            domains = [parent_domains[0]] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='N'] + [parent_domains[1]] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='C']
+    parent_domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True).order_by('-domain_type__slug')
+    if len(parent_domains)==1:
+        domains = list(parent_domains) + [i.domain for i in structuredomains]
+    else:
+        domains = [parent_domains[0]] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='N'] + [parent_domains[1]] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='C']
 
-        alignment = Alignment(domains)
-        segments, gns, residues = alignment.align_domain_residues()
+    alignment = Alignment(domains)
+    segments, gns, residues = alignment.align_domain_residues()
 
-        segmentlist=[]
-        for segment,colnum in segments.items():
-            for i in range(colnum):
-                segmentlist.append(segment.slug)
-        gnzips = [x+y for x,y in zip(segmentlist,gns)]
+    segmentlist=[]
+    for segment,colnum in segments.items():
+        for i in range(colnum):
+            segmentlist.append(segment.slug)
+    gnzips = [x+y for x,y in zip(segmentlist,gns)]
         
-    except Structure.DoesNotExist:
-        return render(request, 'error.html')
+    # except Structure.DoesNotExist:
+    #     return render(request, 'error.html')
 
     return render(request, 'structure.html', {'structure' : structure, 'chains': chains, 'structuredomains' : structuredomains, 
                                             'protein': protein, 'domains': domains,
