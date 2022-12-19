@@ -240,7 +240,7 @@ function run_filter () {
             selected_filters[$(val).attr("id")] = selected_value;
         }
     })
-    $(".data-row").hide();
+    $(".data-row").addClass("hidden");
     var rows_to_show = [];
     $(".data-row").each(function (i, j) {
         if ($("#structure_toggle_button").hasClass("left_position") && $(j).hasClass("structure")) {
@@ -260,7 +260,7 @@ function run_filter () {
             }
         }
         if (show) {
-            $(j).show();
+            $(j).removeClass("hidden");
         }
     })
 }

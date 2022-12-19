@@ -67,6 +67,10 @@
   margin-right: calc(-50vw + 16px);
 }
 
+.hidden {
+  display: none;
+}
+
 /*#alignment_table thead tr th {
     position: -webkit-sticky;
     position: sticky;
