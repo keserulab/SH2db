@@ -20,16 +20,26 @@ from random import randint
 import os
 
 def pymoldownload(request):
+    [os.remove(i) for i in os.listdir() if i.startswith('pymol_session')]
     structures = request.GET['ids'].split(',')
-    domains = Domain.objects.filter(name__in=structures)
-    structure_domains = [i.structure_domain.all() for i in domains]
+    alphafold_uniprot_ids = [i.split('-')[0] for i in structures if '-AF-' in i]
+    structure_domains, af_domains = [], []
+    if len(alphafold_uniprot_ids)>0:
+        af_domains = list(StructureDomain.objects.filter(domain__isoform__protein__accession__in=alphafold_uniprot_ids, domain__parent__isnull=True))
+    else:
+        domains = Domain.objects.filter(name__in=structures)
+        structure_domains = [i.structure_domain.all()[0] for i in domains]
+    structure_domains = structure_domains + af_domains
     residues = request.GET['residues'].split(',')
 
     pdbnames=[]
     for structure_domain in structure_domains:
-        pdbname = 'structure'+str(randint(0,10000000))+'.pdb'
+        if not structure_domain.domain.parent:
+            pdbname = structure_domain.domain.isoform.protein.accession+'-AF-'+structure_domain.domain.domain_type.slug+'.pdb'
+        else:
+            pdbname = structure_domain.domain.name+'.pdb'
         with open(pdbname, 'w') as f:
-            f.write(structure_domain[0].pdbdata.pdb)
+            f.write(structure_domain.pdbdata.pdb)
         pdbnames.append(pdbname)
 
     ## FOR DEBUGGING
@@ -95,47 +105,57 @@ def zipped_pdb(request, structuredomains):
     return resp
 
 def structure(request, pdb_code):
-    # try:
-    if pdb_code.endswith('-AF'):
-        structure = Structure.objects.get(protein__accession=pdb_code.split('-')[0], pdb_code__isnull=True)
-    else:
-        structure = Structure.objects.get(pdb_code=pdb_code)
-    chains = Chain.objects.filter(structure=structure)
-    structuredomains = StructureDomain.objects.filter(chain__structure=structure)
+    try:
+        alphafold = False
+        if pdb_code.endswith('-AF'):
+            structure = Structure.objects.get(protein__accession=pdb_code.split('-')[0], pdb_code__isnull=True)
+            alphafold = pdb_code
+        else:
+            structure = Structure.objects.get(pdb_code=pdb_code)
 
-    protein = structuredomains[0].domain.isoform.protein
-    domains=[]
-    for i in structuredomains:
-        if i.domain not in domains:
-            domains.append(i.domain)
+        chains = Chain.objects.filter(structure=structure)
+        structuredomains = StructureDomain.objects.filter(chain__structure=structure)
 
-    proteinsegments = ProteinSegment.objects.all()
-    residuegenericnumbers = ResidueGenericNumber.objects.all()
-    residues = Residue.objects.filter(domain__in=domains)
+        protein = structuredomains[0].domain.isoform.protein
+        domains=[]
+        for i in structuredomains:
+            if i.domain not in domains:
+                domains.append(i.domain)
 
-    parent_domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True).order_by('-domain_type__slug')
-    if len(parent_domains)==1:
-        domains = list(parent_domains) + [i.domain for i in structuredomains]
-    else:
-        domains = [parent_domains[0]] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='N'] + [parent_domains[1]] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='C']
+        proteinsegments = ProteinSegment.objects.all()
+        residuegenericnumbers = ResidueGenericNumber.objects.all()
+        residues = Residue.objects.filter(domain__in=domains)
 
-    alignment = Alignment(domains)
-    segments, gns, residues = alignment.align_domain_residues()
+        parent_domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True).order_by('-domain_type__slug')
 
-    segmentlist=[]
-    for segment,colnum in segments.items():
-        for i in range(colnum):
-            segmentlist.append(segment.slug)
-    gnzips = [x+y for x,y in zip(segmentlist,gns)]
-        
-    # except Structure.DoesNotExist:
-    #     return render(request, 'error.html')
+        if len(parent_domains)==1:
+            if alphafold:
+                domains = [i.domain for i in structuredomains]
+            else:
+                domains = list(parent_domains) + [i.domain for i in structuredomains]
+        else:
+            if alphafold:
+                domains = [i.domain for i in structuredomains if i.domain.domain_type.slug=='N'] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='C']
+            else:
+                domains = [parent_domains[0]] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='N'] + [parent_domains[1]] + [i.domain for i in structuredomains if i.domain.domain_type.slug=='C']
+
+        alignment = Alignment(domains)
+        segments, gns, residues = alignment.align_domain_residues()
+
+        segmentlist=[]
+        for segment,colnum in segments.items():
+            for i in range(colnum):
+                segmentlist.append(segment.slug)
+        gnzips = [x+y for x,y in zip(segmentlist,gns)]
+            
+    except Structure.DoesNotExist:
+        return render(request, 'error.html')
 
     return render(request, 'structure.html', {'structure' : structure, 'chains': chains, 'structuredomains' : structuredomains, 
                                             'protein': protein, 'domains': domains,
                                             'proteinsegments': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues,
                                             'gns': gns, 'segments': segments, 'parent_domains': parent_domains, 'checkbox': True,
-                                            'gnzips': gnzips})
+                                            'gnzips': gnzips, 'alphafold': alphafold})
     
 
 def chain(request, pdb_code, chain_ID):
