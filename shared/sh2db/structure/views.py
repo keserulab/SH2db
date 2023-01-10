@@ -19,6 +19,7 @@ import subprocess
 from random import randint
 import os
 
+## THIS IS NOW DEPRECATED, BECAUSE THE CURRENT DOWNLOADER POINTS TO home/views.py/pymoldownload
 def pymoldownload(request):
     [os.remove(i) for i in os.listdir() if i.startswith('pymol_session')]
     structures = request.GET['ids'].split(',')
