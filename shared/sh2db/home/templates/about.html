@@ -1,0 +1,130 @@
+{% extends "./navbar.html" %}
+{% load static %}
+
+{% block title %}SH2DB - Contact{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-sm-12 col-md-6">
+	
+    <p>
+        SH2 (Src Homology 2) domains are modular protein units that establish key protein-protein interactions and are therefore of high interest in 
+        drug discovery, particularly for oncological indications. SH2 domains recognize phosphotyrosine (pY)-containing peptide sequences, often as a mechanism
+         for dimer formation, and subsequently regulate a range of cellular processes. A 2012 
+        <a href="https://febs.onlinelibrary.wiley.com/doi/full/10.1016/j.febslet.2012.04.054" target="_blank">review</a>
+         by Liu et al., and our 2019 <a href="https://www.mdpi.com/2072-6694/11/11/1757" target="_blank">review</a>
+          with the Gunning group give a thorough overview of the general features of SH2 domains, the most important of which we have highlighted in 
+         Figure 1:
+    <ul>
+        <li>The centerpiece of the conserved SH2 domain structure is the so-called αβββα motif, containing a central anti-parallel β-sheet 
+            (with the three β-strands conventionally labeled βB-βD) interposed between two α-helices (αA and αB).</li>
+        <li>The β-sheet partitions the SH2 domain into two subpockets, referred to as the pY (phosphate-binding) and pY+3 (specificity) pocket.</li>
+        <li>The Sheinerman residues are a group of 8 pY-interacting amino acids, which include the SH2 domain signature sequence FLXRXS (where X 
+            is a hydrophobic residue) with an invariant arginine in position βB50 (most conserved residue of the βB strand, see below for the generic 
+            numbering scheme introduced here).
+        </li>
+    </ul>
+    </p>
+
+    </div>
+
+    <div class="col-sm-12 col-md-6">
+        <img src="{% static 'home/images/sh2_session2.png' %}" alt="img" style="max-width: 100%"></img>
+    </div>
+
+</div>
+
+<div class="row">
+   <div class="col-sm-12 col-md-6">
+
+    <br>
+    <p>
+        SH2db is an open-source database that aims to catalogue the structural information on SH2 domains in a way that is useful for medicinal chemists and 
+        structural biologists. Currently all human SH2 domains are collected and annotated (Figure 2).
+        SH2db is regularly updated with newly published PDB and AlphaFold structures of SH2 domains. All structures are aligned in two steps:
+        <ol>
+            <li>The sequence is fitted onto a global sequence alignment that is based on the work of 
+                <a href="https://www.sciencedirect.com/science/article/pii/S1097276506003741" target="_blank">Liu et al.</a> and refined 
+                based on the methodology of <a href="https://gpcrdb.org/" target="_blank">GPCRdb</a>. The master alignment can be 
+            downloaded <a>here</a>.
+        </li>
+            <li>A structural alignment is then performed on the CA atoms of the secondary structural features (helices and sheets), with the 
+                current longest structure (highest number of residues) as the reference.
+            </li>  
+        </ol>
+    </p>
+
+    <br>
+
+    <p>
+        Inspired by <a href="https://gpcrdb.org/" target="_blank">GPCRdb</a>, we have introduced a generic residue numbering scheme for SH2 domains, 
+        as follows:
+    <ul>
+        <li>
+            Secondary structural elements are denoted by small letters (a for α helix and b for β strand), and labeled in the N-to-C-terminal direction 
+            by capital letters.
+        </li>
+        <li>
+            Residue positions are numbered from 50 in both directions. In each structural element, position 50 denotes the most conserved sidechain. Numbers
+             increase in the C-terminal direction and decrease in the N-terminal direction.
+        </li>
+        <li>
+            As an example, the residue bB48 is two positions in the N-terminal direction from the most conserved residue of β strand B.
+        </li>
+        <li>
+            Loops are named by merging the names of the structural elements they connect, e.g. loop aAbB connects α helix A to β strand B.
+        </li>
+    </ul>
+    </p>
+
+    <br>
+    <p>
+        If you use SH2db in your work, please cite our primary paper: <a>placeholder</a>
+    </p>
+    
+    </div>
+
+    <div class="col-sm-12 col-md-6">
+        <img src="{% static 'home/images/tree_circular.png' %}" alt="img" style="max-width: 100%"></img>
+    </div>
+
+</div>
+
+<br><br><br>
+
+<div class="row">
+	<div class="col-md-12">
+	
+    <p>SH2db is an open-source project, maintained by the <a href="http://medchem.ttk.hu/" target="_blank">Medicinal Chemistry Research Group</a> 
+        (<a href="https://twitter.com/keserulab" target="_blank">@keserulab</a>) in Budapest, Hungary.
+    </p>
+    <p>
+        You can contribute to the project via GitHub:
+    </p>
+    <object type="image/svg+xml" data="https://gh-card.dev/repos/pszgaspar/sh2db.svg?link_target=_blank"></object>
+
+    <br><br>
+    <p>
+        You can contact us with any questions or suggestions regarding SH2db at sh2db
+        <img align="bottom" width="13" height="15" alt=""  style="border-width: 0px;" src="{% static 'home/images/kukac.png' %}">ttk
+        <img align="bottom" width="3" height="15" alt=""  style="border-width: 0px;"src="{% static 'home/images/potty2.png' %}">hu</p>
+    </p>
+	
+
+    <a href="http://medchem.ttk.hu/" target="_blank">
+        <img src="{% static 'home/images/medchem.png' %}" height="50" alt="img" style="display:inline;"></img>
+    </a>
+    <a href="http://www.ttk.hu/en/" target="_blank">
+        <img src="{% static 'home/images/ttk.jpg' %}" height="50" alt="img" style="display:inline;"></img>
+    </a>
+    
+	</div>
+ </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	document.getElementById("navbar.about").classList.add('active');
+</script>
+{% endblock %}

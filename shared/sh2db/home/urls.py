@@ -10,6 +10,6 @@ urlpatterns = [
     path('browse', views.browse, name='browse'),
     path('charts', views.charts, name='charts'),
     path('get_csv/<str:x>/<str:y>', views.get_csv, name='get_csv'),
-    path('source', views.source, name='source'),
+    path('about', views.about, name='about'),
     path('pymoldownload', views.pymoldownload, name='pymoldownload')
 ]

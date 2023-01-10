@@ -218,9 +218,12 @@ function pymol_download_from_search () {
         if ($(".structure :checkbox:checked").length===0) {
             showAlert("No structure entries selected", "danger");
         }
+
+        /*
         else if ($(".residue_checkbox :checkbox:checked").length===0) {
             showAlert("No residues selected", "danger");
         }
+        */
 
         else {
             $(".residue_checkbox :checkbox:checked").each(function() {
