@@ -186,6 +186,7 @@ function structure_download () {
     });
 }
 
+/* DEPRECATED, EVERY PAGE USES pymol_download_from_search NOW */
 function pymol_download () {
     $("#pymol_download_button").click(function() {
         var structures = [];
@@ -246,7 +247,7 @@ function pymol_download_from_search () {
             });
             
             // PymolDownload(structures.join(','));
-            window.location.href = '/pymoldownload?ids='+structures.join(",")+'&residues='+residues.join(",");
+            window.location.href = '/structure/pymoldownload?ids='+structures.join(",")+'&residues='+residues.join(",");
         }
     });
 }
