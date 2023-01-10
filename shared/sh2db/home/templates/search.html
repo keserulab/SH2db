@@ -27,6 +27,9 @@
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="structure_download_button"><span class="glyphicon glyphicon-download-alt"></span> Structures</button>
             </div>
+            <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="pymol_download_button"><span class="glyphicon glyphicon-download-alt"></span> Pymol session</button>
+            </div>
         </div>
     </div>
 </div>
@@ -50,7 +53,7 @@
         checkbox_selection();
         alignment_download();
         structure_download();
-
+        pymol_download_from_search();
         $("#structure_toggle_button").click(function() {
             $('body').css('cursor','wait');
             

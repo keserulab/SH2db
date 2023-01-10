@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 
 from protein.models import Protein, Domain, ProteinSegment
 from residue.models import Residue, ResidueGenericNumber
@@ -10,13 +10,19 @@ from django.db.models import Count
 
 from structure.models import Structure, StructureDomain
 
+from io import StringIO, BytesIO
+import zipfile
+
+import subprocess
+from random import randint
+import os
 import csv
 
 def index(request):
     return render(request, 'index.html')
 
 def search(request):
-    domains = Domain.objects.all().order_by('isoform', 'domain_type', '-parent', 'name')
+    domains = Domain.objects.all().order_by('isoform', 'domain_type', '-parent', 'name')[:5]
 
     proteinsegments = ProteinSegment.objects.all()
     residuegenericnumbers = ResidueGenericNumber.objects.all()
@@ -174,3 +180,37 @@ def charts(request):
 def source(request):
     return render(request, 'source.html')
 
+def pymoldownload(request):
+    structures = request.GET['ids'].split(',')
+    domains = Domain.objects.filter(name__in=structures)
+    structure_domains = [i.structure_domain.all() for i in domains]
+    residues = request.GET['residues'].split(',')
+
+    pdbnames=[]
+    for structure_domain in structure_domains:
+        pdbname = 'structure'+str(randint(0,10000000))+'.pdb'
+        with open(pdbname, 'w') as f:
+            f.write(structure_domain[0].pdbdata.pdb)
+        pdbnames.append(pdbname)
+
+    ## FOR DEBUGGING
+    io = BytesIO()
+
+    ## GENERATE PYMOL SESSION
+    outfilename = 'pymol_session'+str(randint(0,10000000))+'.pse'
+    result = subprocess.run(["python2.7", os.getcwd()+"/structure/pymol_session.py", outfilename, 
+                                str([ pdbname for pdbname in pdbnames]), str(residues)], capture_output=True)
+
+    for pdbname in pdbnames:
+        os.remove(pdbname)
+
+    ## FOR DEBUGGING
+    io.write(result.stdout)
+
+    response = FileResponse( open(outfilename, "rb"), as_attachment=True)#, filename=outfilename) 
+
+    ## FOR DEBUGGING
+    #response = HttpResponse(io.getvalue(), content_type='application/x-zip-compressed')
+    #response['Content-Disposition'] = 'attachment; filename=%s' % outfilename
+    #response['Content-Length'] = io.tell()
+    return response
