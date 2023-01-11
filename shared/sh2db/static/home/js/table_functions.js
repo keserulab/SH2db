@@ -186,6 +186,7 @@ function structure_download () {
     });
 }
 
+/* DEPRECATED, EVERY PAGE USES pymol_download_from_search NOW */
 function pymol_download () {
     $("#pymol_download_button").click(function() {
         var structures = [];
@@ -204,6 +205,47 @@ function pymol_download () {
             $(".residue_checkbox :checkbox:checked").each(function() {
                 residues.push($(this).attr('id'));
             });
+            // PymolDownload(structures.join(','));
+            window.location.href = '/structure/pymoldownload?ids='+structures.join(",")+'&residues='+residues.join(",");
+        }
+    });
+}
+
+function pymol_download_from_search () {
+    $("#pymol_download_button").click(function() {
+        var structures = [];
+        var residues = [];
+        var column_indices = [];
+        if ($(".structure :checkbox:checked").length===0) {
+            showAlert("No structure entries selected", "danger");
+        }
+
+        /*
+        else if ($(".residue_checkbox :checkbox:checked").length===0) {
+            showAlert("No residues selected", "danger");
+        }
+        */
+
+        else {
+            $(".residue_checkbox :checkbox:checked").each(function() {
+                column_indices.push($(this).parent().parent().children().index($(this).parent()) );
+            });
+
+            $(".structure :checkbox:checked").each(function() {
+                structures.push( $(this).parent().parent().children().eq(2).text() );
+
+                $.each(column_indices, function(key,value) {
+                    if( $(this).parent().parent().children().eq(value).attr('title') ) {
+                        residues.push( $(this).parent().parent().children().eq(value).attr('title').replace(/[^0-9]/gi, '') );
+                    }
+
+                    else {
+                        residues.push( '' );
+                    }
+                }.bind(this));
+
+            });
+            
             // PymolDownload(structures.join(','));
             window.location.href = '/structure/pymoldownload?ids='+structures.join(",")+'&residues='+residues.join(",");
         }

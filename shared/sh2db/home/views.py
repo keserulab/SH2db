@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 
 from protein.models import Protein, Domain, ProteinSegment
 from residue.models import Residue, ResidueGenericNumber
@@ -10,6 +10,12 @@ from django.db.models import Count
 
 from structure.models import Structure, StructureDomain
 
+from io import StringIO, BytesIO
+import zipfile
+
+import subprocess
+from random import randint
+import os
 import csv
 
 def index(request):
@@ -171,6 +177,5 @@ def get_csv(request, x, y):
 def charts(request):
     return render(request, 'charts.html')
 
-def source(request):
-    return render(request, 'source.html')
-
+def about(request):
+    return render(request, 'about.html')

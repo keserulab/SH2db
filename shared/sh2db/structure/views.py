@@ -27,10 +27,10 @@ def pymoldownload(request):
     if len(alphafold_uniprot_ids)>0:
         af_domains = list(StructureDomain.objects.filter(domain__isoform__protein__accession__in=alphafold_uniprot_ids, domain__parent__isnull=True))
     else:
-        domains = Domain.objects.filter(name__in=structures)
+        domains = Domain.objects.filter(name__in=structures).order_by('isoform', 'domain_type', '-parent', 'name') 
         structure_domains = [i.structure_domain.all()[0] for i in domains]
     structure_domains = structure_domains + af_domains
-    residues = request.GET['residues'].split(',')
+    residues = request.GET['residues']
 
     pdbnames=[]
     for structure_domain in structure_domains:
@@ -47,7 +47,7 @@ def pymoldownload(request):
 
     ## GENERATE PYMOL SESSION
     outfilename = 'pymol_session'+str(randint(0,10000000))+'.pse'
-    result = subprocess.run(["python2.7", os.getcwd()+"/structure/pymol_session.py", outfilename, 
+    result = subprocess.run(["python2.7", os.getcwd()+"/structure/pymol_session_new.py", outfilename, 
                                 str([ pdbname for pdbname in pdbnames]), str(residues)], capture_output=True)
 
     for pdbname in pdbnames:
