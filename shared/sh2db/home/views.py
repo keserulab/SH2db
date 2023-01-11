@@ -22,7 +22,7 @@ def index(request):
     return render(request, 'index.html')
 
 def search(request):
-    domains = Domain.objects.all().order_by('isoform__protein__name', 'domain_type', '-parent', 'name')[:60]
+    domains = Domain.objects.all().order_by('isoform__protein__name', 'domain_type', '-parent', 'name')
 
     proteinsegments = ProteinSegment.objects.all()
     residuegenericnumbers = ResidueGenericNumber.objects.all()
