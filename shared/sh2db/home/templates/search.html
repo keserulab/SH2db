@@ -46,6 +46,7 @@
 <script src="{% static 'home/js/table_functions.js' %}"></script>
 <script>
     document.getElementById("navbar.search").classList.add('active');
+    $("#alignment_table").hide();
     $(document).ready(function() {
         // $("#alignment_table").parent().addClass("escape-container");
         $(".structure").addClass("hidden");
@@ -70,6 +71,8 @@
             run_filter();
             $('body').css('cursor','auto');
         });
+        $("#alignment_table").show();
+
     });
 </script>
 {% endblock %}
