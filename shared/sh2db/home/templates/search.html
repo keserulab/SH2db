@@ -14,7 +14,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="btn-group" role="group" aria-label="Basic example">
-            <div style='display:inline;'>
+            <div style='display:inline; vertical-align:middle;'>
             	<label class="switch">
                     <input type="checkbox" class="left_position" id="structure_toggle_button">
                     <span class="slider round"></span>
@@ -26,6 +26,9 @@
             </div>
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="structure_download_button"><span class="glyphicon glyphicon-download-alt"></span> Structures</button>
+            </div>
+            <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="pymol_download_button"><span class="glyphicon glyphicon-download-alt"></span> Pymol session</button>
             </div>
         </div>
     </div>
@@ -45,23 +48,27 @@
     document.getElementById("navbar.search").classList.add('active');
     $(document).ready(function() {
         // $("#alignment_table").parent().addClass("escape-container");
-        $(".structure").hide();
+        $(".structure").addClass("hidden");
         table_filter();
         checkbox_selection();
         alignment_download();
         structure_download();
+        pymol_download_from_search();
         $("#structure_toggle_button").click(function() {
+            $('body').css('cursor','wait');
+            
             if ($(this).hasClass("left_position")) {
-                $(".structure").show();
+                $("tbody").children(".child").removeClass("hidden")
                 $(this).addClass("right_position");
                 $(this).removeClass("left_position");
             }
             else if ($(this).hasClass("right_position")) {
-                $(".structure").hide();
+                $("tbody").children(".child").addClass("hidden")
                 $(this).addClass("left_position");
                 $(this).removeClass("right_position");
             }
             run_filter();
+            $('body').css('cursor','auto');
         });
     });
 </script>

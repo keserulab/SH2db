@@ -15,7 +15,9 @@ import pprint
 import urllib
 import json
 from datetime import datetime
-from Bio.PDB import Polypeptide, PDBParser
+from Bio.PDB import Polypeptide, PDBParser, Superimposer
+from Bio.PDB.PDBIO import PDBIO
+from copy import deepcopy
 
 
 class Command(BaseBuild):
@@ -95,6 +97,8 @@ class Command(BaseBuild):
                 try:
                     res.amino_acid_three_letter = Polypeptide.one_to_three(aa)
                 except KeyError:
+                    if aa not in self.unnatural_amino_acids:
+                        continue
                     res.amino_acid = self.unnatural_amino_acids[aa]
                     res.amino_acid_three_letter = aa
                 resis.append(res)
@@ -120,19 +124,21 @@ class Command(BaseBuild):
         return seg
 
     def parse_alignment_file(self):
-        with open(os.sep.join([settings.DATA_DIR, 'table_from_alignment_with_pdbs_0917.csv']), newline='') as csvfile:
-            structure_reader = csv.reader(csvfile, delimiter=';', quotechar='|')
+        with open(os.sep.join([settings.DATA_DIR, 'master_table_new.csv']), newline='') as csvfile:
+            structure_reader = csv.reader(csvfile, delimiter=';', quotechar="|")
             for i, row in enumerate(structure_reader):
+                if i==0:
+                    continue
                 if i==1:
-                    self.gns = row[2:]
+                    self.gns = row[8:]
                 # PDB IDs
-                if row[1]!='nums' and row[1]!='seq' and len(row[1])>3:
-                    pdb = row[1][:4]
-                    chain = row[1][5]
-                    domain = row[1][-1]
-                    gene = row[0].split('_')[0]
-                    seq = ''.join(row[2:]).replace('-','')
-                    self.protein_seqs_aligned[row[1]] = [row[0], row[2:]]
+                if row[6]!='nums' and row[6]!='seq' and len(row[6])>3:
+                    pdb = row[6][:4]
+                    chain = row[6][5]
+                    domain = row[6][-1]
+                    gene = row[5].split('_')[0]
+                    seq = ''.join(row[8:]).replace('-','')
+                    self.protein_seqs_aligned[row[6]] = [row[5], row[8:]]
                     if pdb not in self.pdbs:
                         self.pdbs.append(pdb)
                         self.chains[pdb] = [chain]
@@ -145,8 +151,8 @@ class Command(BaseBuild):
                         if domain not in self.domains[pdb]['chains'][chain]:
                             self.domains[pdb]['chains'][chain][domain] = seq
 
-                elif row[1]=='nums':
-                    self.seqnums[row[0]] = row[2:]
+                elif row[6]=='nums':
+                    self.seqnums[row[5]] = row[8:]
 
     def build_pdbdata(self, filename):
         with open(filename, 'r') as f:
@@ -167,7 +173,10 @@ class Command(BaseBuild):
                     # Protein domain
                     prot_domain, created = Domain.objects.get_or_create(name=pdb+'_'+domain+'_'+chain, isoform=parent_domain.isoform, domain_type=parent_domain.domain_type, sequence=seq, parent=parent_domain)
                     # PDBData
-                    pdbdata = self.build_pdbdata(os.sep.join([self.pdbs_path, parent_domain.isoform.protein.family.name.replace(' ','_'), parent_domain.isoform.protein.name, pdb, '{}_{}_SH2_{}_SUPERPOSED.pdb'.format(pdb,chain,domain)]))
+                    try:
+                        pdbdata = self.build_pdbdata(os.sep.join([self.pdbs_path, '{}_{}_SH2_{}_SUPERPOSED.pdb'.format(pdb,chain,domain)]))
+                    except:
+                        pdbdata = self.build_pdbdata(os.sep.join([self.pdbs_path, '{}_{}_SH2_{}.pdb'.format(pdb,chain,domain)]))
                     # Structure domain
                     struct_domain, created = StructureDomain.objects.get_or_create(chain=chain_obj, domain=prot_domain, pdbdata=pdbdata)
 
@@ -221,6 +230,13 @@ class Command(BaseBuild):
     def build_models(self):
         af_type, created = StructureType.objects.get_or_create(slug='AF', name='Alphafold')
         month_dict = {'JAN':'01', 'FEB':'02', 'MAR':'03', 'APR':'04', 'MAY':'05', 'JUN':'06', 'JUL':'07', 'AUG':'08', 'SEP':'09', 'OCT':'10', 'NOV':'11', 'DEC':'12'}
+        refpdb = '2KK6_N_A'
+        ref_struct_domain = StructureDomain.objects.get(domain__name=refpdb)
+        ref_resis = Residue.objects.filter(domain=ref_struct_domain.domain, protein_segment__slug__in=['bB','bC','bD'])
+        ref_gns = ref_resis.values_list('generic_number__label', flat=True)
+        with open('ref.pdb', 'w') as f:
+            f.write(ref_struct_domain.pdbdata.pdb)
+
         for f in os.listdir(self.af_path):
             this_file = os.sep.join([self.af_path, f])
             accession, _ = f.split('.')
@@ -234,12 +250,51 @@ class Command(BaseBuild):
                                                                  structure_type=af_type, protein=protein)
             chain, created = Chain.objects.get_or_create(chain_ID='A', structure=structure)
             domains = Domain.objects.filter(isoform__protein=protein, parent__isnull=True)
-            # p = PDBParser()
-            # model = p.get_structure('af', this_file)[0]['A']
-            pdbdata = self.build_pdbdata(this_file)
+            p = PDBParser()
+            
             for domain in domains:
-                structdomain, created = StructureDomain.objects.get_or_create(chain=chain, domain=domain, pdbdata=pdbdata)
+                residues = Residue.objects.filter(domain=domain)
+                resnums = residues.values_list('sequence_number', flat=True)
+                common_gns = [i.generic_number.label for i in residues if i.generic_number and i.generic_number.label in ref_gns]
+                ref_resnums = ref_resis.filter(generic_number__label__in=common_gns).values_list('sequence_number', flat=True)
+                af_resnums = residues.filter(generic_number__label__in=common_gns).values_list('sequence_number', flat=True)
+                ref_struct = PDBParser().get_structure('ref', 'ref.pdb')
+                structure = p.get_structure('af', this_file)
+                pdb_chain = structure[0]['A']
+                detach_ids = []
+                ref_sup_atoms, af_sup_atoms = [], []
+                for res in pdb_chain:
+                    if int(res.get_id()[1]) not in resnums:
+                        detach_ids.append(res.get_id())
+                    if res.get_id()[1] in af_resnums:
+                        af_sup_atoms.append(res['N'])
+                        af_sup_atoms.append(res['CA'])
+                        af_sup_atoms.append(res['C'])
 
+                for i in detach_ids:
+                    pdb_chain.detach_child(i)
+                
+                for refres in ref_struct[0]['A']:
+                    if refres.get_id()[1] in ref_resnums:
+                        ref_sup_atoms.append(refres['N'])
+                        ref_sup_atoms.append(refres['CA'])
+                        ref_sup_atoms.append(refres['C'])
+
+                sp = Superimposer()
+                sp.set_atoms(ref_sup_atoms, af_sup_atoms)
+                sp.apply(structure.get_atoms())
+
+                io=PDBIO()
+                io.set_structure(structure)
+                model_filename = "{}.pdb".format(domain.name)
+                io.save(model_filename)
+
+                pdbdata = self.build_pdbdata(model_filename)
+
+                os.remove(model_filename)
+
+                structdomain, created = StructureDomain.objects.get_or_create(chain=chain, domain=domain, pdbdata=pdbdata)
+        os.remove('ref.pdb')
 
     def pdb_request_by_pdb(self, pdb):
         data = {}

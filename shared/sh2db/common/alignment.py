@@ -1,14 +1,18 @@
 from residue.models import Residue
 from protein.models import ProteinSegment
+from datetime import datetime
+
 
 class Alignment():
     def __init__(self, domains):
         self.domains = domains
 
     def align_domain_residues(self):
+        start = datetime.now()
         residues = []
         for d in self.domains:
-            residues.append(Residue.objects.filter(domain=d).prefetch_related('protein_segment'))
+            residues.append(Residue.objects.filter(domain=d))#.select_related('protein_segment','generic_number','domain__isoform__protein','domain__domain_type'))
+        print('fetch residues', datetime.now()-start)
         segments = {}
         gns = {}
         segs_to_keep = []
@@ -30,7 +34,7 @@ class Alignment():
                     segs_to_keep.append(seg)
         for seg in list(gns.keys()-segs_to_keep):
             del gns[seg]
-
+        print('gns check', datetime.now()-start)
         gns_out = []
         for seg, gns_list in gns.items():
             if gns_list[0]!='':
@@ -39,7 +43,7 @@ class Alignment():
             else:
                 gns_out += gns_list
             segments[seg] = len(gns_list)
-
+        print('segments', datetime.now()-start)
         aligned_domains = []
         for resis in residues:
             if resis[0].domain.parent:
@@ -80,7 +84,5 @@ class Alignment():
                             aligned_residues.append('-')
 
             aligned_domains.append(aligned_residues)
-
-        
-
+        print('alignment', datetime.now()-start)
         return segments, gns_out, aligned_domains

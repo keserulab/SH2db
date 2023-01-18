@@ -20,51 +20,21 @@
     
     <h2>{{ protein.name }}</h2>
     <br>
-    <p>Recommendedddd name: {{fullname}}</p>
+    <p>Recommended name: {{fullname}}</p>
     <p>Gene name: {{protein.name}}</p>
     <p>No. of SH2 domains: {{ domains | length }}</p>
     <p>Uniprot: <a href="https://www.uniprot.org/uniprot/{{ protein.accession }}" target="_blank">{{ protein.accession }}</a></p>
     
         <h3>Sequences</h3>
-        <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Domain</th>
-                        {% for segment, colnum in segments.items %}
-                        <th class="{{segment.category}}" colspan="{{ colnum }}" style='padding: 5px;'>{{ segment }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        {% for gn in gns %}
-                        <td class='residue' style='padding: 5px;'>{{ gn|short_gn }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% for domain_residues in residues %}
-                    <tr>
-                        <td style='padding: 5px;'>{{ domain_residues.0 }}</td>
-                        {% for res in domain_residues|slice:"1:" %}
-                            {% if res.amino_acid %}
-                            <td class='residue res-color-{{res.amino_acid}}' title='{{res}}
-{{res.amino_acid_three_letter}}'>{{ res.amino_acid }}</td>
-                            {% else %}
-                            <td class='residue'>-</td>
-                            {% endif %}
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-</div class="row">
+        {% include "alignment_table.html" with segments=segments gns=gns residues=residues %}
+    </div>
+</div>
+<div class="row">
     <div class="col-md-12">
         <h3>Structures</h3>
-        <div class="row">
+        
             <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
-                {% if structures|length > 0 %}
+                <!-- {% if structures|length > 0 %} -->
                 <table class="table" id="structureTable">
                     <thead>
                         <tr>
@@ -91,16 +61,16 @@
                     <tbody>
                     {% for structure in structures %}
                         <tr>
-                            {% if not structure.pdb_code %}
-                            <td><a href="/structure/{{ structure.protein.accession }}-AF">{{ structure.protein.accession }}-AF</a></td>
-                            {% else %}
+                            {% if structure.pdb_code %}
                             <td><a href="/structure/{{ structure.pdb_code }}">{{ structure.pdb_code }}</a></td>
+                            {% else %}
+                            <td><a href="/structure/{{ structure.protein.accession }}-AF">{{ structure.protein.accession }}-AF</a></td>
                             {% endif %}
                             <td>{{ structure.structure_type.name }}</a></td>
-                            {% if not structure.resolution %}
-                            <td>-</td>
-                            {% else %}
+                            {% if structure.pdb_code %}
                             <td>{{ structure.resolution }}</td>
+                            {% else %}
+                            <td>-</td>
                             {% endif %}
                             <td>
                             {% for domain in structure.chain.all.0.structure_domain.all %}
@@ -113,24 +83,24 @@
                             {% endfor %}
                             </td>
                             <td>{{ structure.publication_date|date:"Y-m-d" }}</td>
-                            {% if not structure.publication %}
-                            <td>-</td>
-                            <td>-</td>
-                            {% else %}
+                            {% if structure.pdb_code %}
                             <td>{{ structure.publication.authors|authors_short }}</td>
-                            <td><a href="{{ structure.publication.reference.index }}">{{ structure.publication.reference.index }}</a></td>
+                            <td><a href="#">{{ structure.publication.reference.index }}</a></td>
+                            {% else %}
+                            <td>-</td>
+                            <td>-</td>
                             {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
-                {% else %}
+                <!-- {% else %}
                 No structures available
-                {% endif %}
+                {% endif %} -->
             <br>
 
             </div>
-        </div>
+        
     </div>
 
  </div>
