@@ -47,7 +47,7 @@ def pymoldownload(request):
 
     ## GENERATE PYMOL SESSION
     outfilename = 'SH2db_pymol_session'+str(randint(0,10000000))+'.pse'
-    result = subprocess.run(["python2.7", os.getcwd()+"/structure/pymol_session.py", outfilename, 
+    result = subprocess.run(["python2.7", os.getcwd()+"/structure/pymol_session_new.py", outfilename, 
                                 str([ pdbname for pdbname in pdbnames]), str(residues)], capture_output=True)
 
     for pdbname in pdbnames:
