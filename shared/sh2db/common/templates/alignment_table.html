@@ -3,13 +3,13 @@
 {% load common_tags %}
 
 {% if filter %}
-<div style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; height:80vh; overflow-y:scroll; display:inline-block;'>
+<div id='table_container' style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; height:80vh; overflow-y:scroll; display:inline-block;'>
 {% else %}
-<div style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:scroll; display:inline-block;'>
+<div id='table_container' style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:scroll; display:inline-block;'>
 {% endif %}
     <div>
     <table id="alignment_table" class="display compact">
-        <thead>
+        <thead id="table_header">
             <tr>
                 {% if checkbox %}
                 <th></th>
@@ -20,20 +20,22 @@
                 <th class="{{segment.category}}" colspan="{{ colnum }}" style='padding: 5px;' title="{{ segment }} {{ segment.category }}">{{ segment }}</th>
                 {% endfor %}
             </tr>
-        </thead>
-        <tbody>
             {% if checkbox %}
             <tr class='residue_checkbox' >
                 <td></td>
-                {% for residue in residues.0 %}
+                <td></td>
+                <td></td>
+                {% for residue in residues.0|slice:"2:" %}
                     <td style='padding: 5px;' ><input type="checkbox"  id="{{ residue }}"></td>
                 {% endfor %}
             </tr>
             {% endif %}
 
             <tr>
-                {% if checkbox %}
+                {% if checkbox and residues|length > 1 %}
                 <td><input type="checkbox" id="select-all"></td>
+                {% else %}
+                <td></td>
                 {% endif %}
                 <td></td>
                 <td></td>
@@ -64,6 +66,8 @@
                 {% endfor %}
             </tr>
             {% endif %}
+        </thead>
+        <tbody>
             {% for domain_residues in residues %}
                 {% if domain_residues.1.parent or alphafold %}
                     {% if domain_residues.1.domain_type.slug == "N" %}
@@ -81,11 +85,15 @@
                     {% if checkbox %}
                     <td><input type="checkbox" class="alt"></td>
                     {% endif %}
-                    <td class="protein" style='padding: 5px;'>{{ domain_residues.0 }}</td>
+                    <td class="protein" style='padding: 5px;'><a href="/protein/{{ domain_residues.0 }}" target="_blank">{{ domain_residues.0 }}</a></td>
                     {% if alphafold %}
-                    <td class="domain" style='padding: 5px;'>{{ alphafold }}-{{ domain_residues.1.slug }}</td>
+                    <td class="domain" style='padding: 5px;'><a href="/structure/{{ alphafold }}" target="_blank">{{ alphafold }}-{{ domain_residues.1.slug }}</a></td>
                     {% else %}
-                    <td class="domain" style='padding: 5px;'>{{ domain_residues.1 }}</td>
+                        {% if domain_residues.1.slug %}
+                        <td class="domain" style='padding: 5px;'>{{ domain_residues.1 }}</td>
+                        {% else %}
+                        <td class="domain" style='padding: 5px;'><a href="/structure/{{ domain_residues.1.name|slice:'0:4' }}" target="_blank">{{ domain_residues.1 }}</a></td>
+                        {% endif %}
                     {% endif %}
                     {% for res in domain_residues|slice:"2:" %}
                         {% if res.amino_acid %}
