@@ -27,7 +27,7 @@ def pymoldownload(request):
     if len(alphafold_uniprot_ids)>0:
         af_domains = list(StructureDomain.objects.filter(domain__isoform__protein__accession__in=alphafold_uniprot_ids, domain__parent__isnull=True))
     else:
-        domains = Domain.objects.filter(name__in=structures).order_by('isoform', 'domain_type', '-parent', 'name') 
+        domains = Domain.objects.filter(name__in=structures).order_by('isoform__protein__name', 'domain_type', '-parent', 'name') 
         structure_domains = [i.structure_domain.all()[0] for i in domains]
     structure_domains = structure_domains + af_domains
     residues = request.GET['residues']

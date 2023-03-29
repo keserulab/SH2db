@@ -310,8 +310,8 @@ function run_filter () {
 function fill_filter (td_class, filter_id) {
     var options = [];
     $(td_class).each(function (key, val) {
-        if (!options.includes(val.innerHTML)) {
-            options.push(val.innerHTML);
+        if (!options.includes(val.innerText)) {
+            options.push(val.innerText);
         }
     });
     $(filter_id).append(`<option value=""></option>`)

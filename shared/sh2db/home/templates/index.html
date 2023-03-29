@@ -11,25 +11,32 @@
 <!-- Left column -->
 <div class="row">
 	<div class="col-sm-12 col-md-6">
-	
-    <p>
-        SH2 (Src Homology 2) domains are modular protein units that establish key protein-protein interactions and are therefore of high interest in 
-        drug discovery, particularly for oncological indications. SH2 domains recognize phosphotyrosine (pY)-containing peptide sequences, often as a mechanism
-         for dimer formation, and subsequently regulate a range of cellular processes.
-    </p>
-    <br>
-    <br>
-    <p>
-        SH2db is a convenient starting point for working with pre-aligned SH2 domain sequences and structures. You can <a href="/browse">Browse</a> 
-        individual entries for proteins and specific structures, <a href="/search">Search</a> the database by sequence-specific criteria, and download 
-        any subset of structures as a Pymol session.
-    </p>
-    <br>
-    <br>
-    <p>
-        Read more about the general structural features of SH2 domains on the <a href="/about">About</a> page.
-    </p>
-
+        <p>
+            SH2 (Src Homology 2) domains are modular protein units that establish key protein-protein interactions and are therefore of high interest in 
+            drug discovery, particularly for oncological indications. SH2 domains recognize phosphotyrosine (pY)-containing peptide sequences, often as a mechanism
+             for dimer formation, and subsequently regulate a range of cellular processes.
+        </p>
+        <br>
+        <p>
+            SH2db is a convenient starting point for working with pre-aligned SH2 domain sequences and structures. You can <a href="/browse">Browse</a> 
+            individual entries for proteins and specific structures, <a href="/search">Search</a> the database by sequence-specific criteria, and download 
+            any subset of structures as a Pymol session.
+        </p>
+        <p>
+            Read more about the general structural features of SH2 domains on the <a href="/about">About</a> page.
+        </p>
+        <br>
+        <p>
+            If you use SH2db in your work, please cite our primary paper: <a><i>To be published</i></a>
+        </p>
+        <p>
+        <a href="http://medchem.ttk.hu/" target="_blank">
+            <img src="{% static 'home/images/medchem.png' %}" height="50" alt="img" style="display:inline;"></img>
+        </a>
+        <a href="http://www.ttk.hu/en/" target="_blank">
+            <img src="{% static 'home/images/ttk.jpg' %}" height="50" alt="img" style="display:inline;"></img>
+        </a>
+        </p>
     </div>
 
     <div class="col-sm-12 col-md-6">
@@ -38,30 +45,10 @@
 
 </div>
 
-<div class="row">
-   <div class="col-sm-12 col-md-6">
-    <br>
-    <p>
-        If you use SH2db in your work, please cite our primary paper: <a>placeholder</a>
-    </p>
-
-    <p>
-    <a href="http://medchem.ttk.hu/" target="_blank">
-        <img src="{% static 'home/images/medchem.png' %}" height="50" alt="img" style="display:inline;"></img>
-    </a>
-    <a href="http://www.ttk.hu/en/" target="_blank">
-        <img src="{% static 'home/images/ttk.jpg' %}" height="50" alt="img" style="display:inline;"></img>
-    </a>
-    </p>
-
-	</div>
-
- </div>
-
 {% endblock %}
 
 {% block scripts %}
 <script>
-	document.getElementById("navbar.index").classList.add('active');
+	document.getElementById("navbar").classList.add('active');
 </script>
 {% endblock %}
