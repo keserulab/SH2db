@@ -3,61 +3,65 @@
 {% load common_tags %}
 
 {% if filter %}
-<div id='table_container' style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; height:80vh; overflow-y:scroll; display:inline-block;'>
+<div id='table_container' style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; height:80vh;  overflow-x:scroll; overflow-y:scroll; display:inline-block; overflow: auto;'>
 {% else %}
-<div id='table_container' style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:scroll; display:inline-block;'>
+<div id='table_container' style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-x:scroll; overflow-y:scroll; display:inline-block;'>
 {% endif %}
     <div>
     <table id="alignment_table" class="display compact">
         <thead id="table_header">
-            <tr>
+            <tr> <!-- segments -->
                 {% if checkbox %}
-                <th></th>
+                <th class='white-bg fixed_column1'></th>
                 {% endif %}
-                <th>Protein</th>
-                <th>Domain</th>
+                <th class='white-bg fixed_column2' style='text-align:center;'>Protein</th>
+                <th class='white-bg fixed_column3' style='text-align:center;'>Domain</th>
                 {% for segment, colnum in segments.items %}
                 <th class="{{segment.category}}" colspan="{{ colnum }}" style='padding: 5px;' title="{{ segment }} {{ segment.category }}">{{ segment }}</th>
                 {% endfor %}
             </tr>
             {% if checkbox %}
-            <tr class='residue_checkbox' >
-                <td></td>
-                <td></td>
-                <td></td>
+            <tr class='residue_checkbox white-bg'> <!-- residue checkbox -->
+                <td class='fixed_column1'></td>
+                <td class='fixed_column2'></td>
+                <td class='fixed_column3'></td>
                 {% for residue in residues.0|slice:"2:" %}
                     <td style='padding: 5px;' ><input type="checkbox"  id="{{ residue }}"></td>
                 {% endfor %}
             </tr>
             {% endif %}
 
-            <tr>
+            <tr class='white-bg'> <!-- generic numbers -->
                 {% if checkbox and residues|length > 1 %}
-                <td><input type="checkbox" id="select-all"></td>
-                {% else %}
-                <td></td>
+                <td class='fixed_column1'><input type="checkbox" id="select-all"></td>
+                {% elif checkbox %}
+                <td class='fixed_column1'></td>
                 {% endif %}
-                <td></td>
-                <td></td>
+                <td class='fixed_column2'></td>
+                <td class='fixed_column3'></td>
                 {% for gn in gns %}
-                <td class='residue' style='padding: 5px;'>{{ gn|short_gn }}</td>
+                    {% if forloop.counter0 in sheinerman %}
+                    <td class='residue sheinerman' style='padding: 5px;'>{{ gn|short_gn }}</td>
+                    {% else %}
+                    <td class='residue' style='padding: 5px;'>{{ gn|short_gn }}</td>
+                    {% endif %}
                 {% endfor %}
             </tr>
             {% if filter %}
-            <tr>
+            <tr> <!-- selection filter -->
                 {% if checkbox %}
-                <td></td>
+                <td class='white-bg fixed_column1'></td>
                 {% endif %}
                 {% if filter %}
-                <td>
+                <td class='fixed_column2'>
                     <select class="form-select" aria-label="Default select example" id="protein_filter"></select>
                 </td>
-                <td>
+                <td class='fixed_column3'>
                     <select class="form-select" aria-label="Default select example" id="domain_filter"></select>
                 </td>
                 {% else %}
-                <td></td>
-                <td></td>
+                <td class='fixed_column2'></td>
+                <td class='fixed_column3'></td>
                 {% endif %}
                 {% for gn in gns %}
                 <td>
@@ -69,11 +73,17 @@
         </thead>
         <tbody>
             {% for domain_residues in residues %}
-                {% if domain_residues.1.parent or alphafold %}
+                {% if domain_residues.1.parent %}
                     {% if domain_residues.1.domain_type.slug == "N" %}
-                    <tr class="structure data-row N">
+                    <tr class="structure pdb data-row N">
                     {% else %}
-                    <tr class="structure data-row C">
+                    <tr class="structure pdb data-row C">
+                    {% endif %}
+                {% elif alphafold %}
+                    {% if domain_residues.1.domain_type.slug == "N" %}
+                    <tr class="structure alphafold data-row N">
+                    {% else %}
+                    <tr class="structure alphafold data-row C">
                     {% endif %}
                 {% else %}
                     {% if domain_residues.1.slug == "N" %}
@@ -83,18 +93,21 @@
                     {% endif %}
                 {% endif %}
                     {% if checkbox %}
-                    <td><input type="checkbox" class="alt"></td>
+                    <td><input type="checkbox" class="alt fixed_column1"></td>
                     {% endif %}
-                    <td class="protein" style='padding: 5px;'><a href="/protein/{{ domain_residues.0 }}" target="_blank">{{ domain_residues.0 }}</a></td>
-                    {% if alphafold %}
-                    <td class="domain" style='padding: 5px;'><a href="/structure/{{ alphafold }}" target="_blank">{{ alphafold }}-{{ domain_residues.1.slug }}</a></td>
-                    {% else %}
+                    <td class="protein fixed_column2" style='padding: 5px;'><a href="/protein/{{ domain_residues.0.name }}" target="_blank">{{ domain_residues.0.name }}</a></td>
+                    {% if domain_residues.1.parent %}
                         {% if domain_residues.1.slug %}
-                        <td class="domain" style='padding: 5px;'>{{ domain_residues.1 }}</td>
+                        <td class="domain fixed_column2" style='padding: 5px;'>{{ domain_residues.1 }}</td>
                         {% else %}
-                        <td class="domain" style='padding: 5px;'><a href="/structure/{{ domain_residues.1.name|slice:'0:4' }}" target="_blank">{{ domain_residues.1 }}</a></td>
+                        <td class="domain fixed_column3" style='padding: 5px;'><a href="/structure/{{ domain_residues.1.name|slice:'0:4' }}" target="_blank">{{ domain_residues.1 }}</a></td>
                         {% endif %}
+                    {% elif alphafold %}
+                        <td class="domain fixed_column3" style='padding: 5px;'><a href="/structure/{{ domain_residues.0.accession }}-AF" target="_blank"><i>{{ domain_residues.0.accession }}-AF-{{ domain_residues.1.slug }}</i></a></td>
+                    {% else %}
+                        <td class="domain fixed_column3" style='padding: 5px;'>{{ domain_residues.1 }}</td>
                     {% endif %}
+
                     {% for res in domain_residues|slice:"2:" %}
                         {% if res.amino_acid %}
                         <td class='residue res-color-{{res.amino_acid}} res_{{ forloop.counter }}' title='{{res}}

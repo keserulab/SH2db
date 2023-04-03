@@ -1,7 +1,7 @@
 {% extends "./navbar.html" %}
 {% load static %}
 
-{% block title %}SH2DB - Search{% endblock %}
+{% block title %}SH2db - Search{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'home/css/alignment.css' %}" type="text/css" />
@@ -10,9 +10,8 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-10">
         <div class="btn-group" role="group" aria-label="Basic example">
             <div style='display:inline; vertical-align:middle;'>
             	<label class="switch">
@@ -30,6 +29,9 @@
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="pymol_download_button"><span class="glyphicon glyphicon-download-alt"></span> Pymol session</button>
             </div>
+            <!-- <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="sheinerman_button">Select Sheinerman residues</button>
+            </div> -->
         </div>
     </div>
 </div>
@@ -46,17 +48,19 @@
 <script src="{% static 'home/js/table_functions.js' %}"></script>
 <script>
     document.getElementById("navbar.search").classList.add('active');
-    $("#alignment_table").hide();
+    // $("#alignment_table").hide();
+    // $("body").css("cursor", "progress");
     $(document).ready(function() {
         // $("#alignment_table").parent().addClass("escape-container");
-        $(".structure").addClass("hidden");
+        $(".pdb").addClass("hidden");
         table_filter();
         checkbox_selection();
         alignment_download();
         structure_download();
+        sheinerman_button();
         pymol_download_from_search();
         $("#structure_toggle_button").click(function() {
-            $('body').css('cursor','wait');
+            $('body').css('cursor','progress');
             
             if ($(this).hasClass("left_position")) {
                 $("tbody").children(".child").removeClass("hidden")
@@ -69,10 +73,14 @@
                 $(this).removeClass("right_position");
             }
             run_filter();
-            $('body').css('cursor','auto');
+            $('body').css('cursor','default');
         });
-        $("#alignment_table").show();
-
+        // $("#alignment_table").show();
+        document.getElementById("table_container").addEventListener("scroll",function(){
+            var translate = "translate(0,"+this.scrollTop+"px)";
+            this.querySelector("thead").style.transform = translate;
+        });
+        // $("body").css("cursor", "default");
     });
 </script>
 {% endblock %}

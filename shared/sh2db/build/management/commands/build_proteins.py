@@ -145,7 +145,10 @@ class Command(BaseBuild):
         if not prev_seg:
             seg = ProteinSegment.objects.get(name='N-term')
         if next_seg and prev_seg:
-            seg = ProteinSegment.objects.get(name=prev_seg+next_seg)
+            try:
+                seg = ProteinSegment.objects.get(name=prev_seg+next_seg)
+            except ProteinSegment.DoesNotExist:
+                seg = ProteinSegment.objects.get(slug='bBbC')
         return seg
 
     def build_domains(self):
@@ -166,7 +169,7 @@ class Command(BaseBuild):
 
     def parse_alignment_file(self):
         scheme = ResidueNumberingScheme.objects.get(short_name='GN')
-        with open(os.sep.join([settings.DATA_DIR, 'master_table_new.csv']), newline='') as csvfile:
+        with open(os.sep.join([settings.DATA_DIR, 'master_table_20230403.csv']), newline='') as csvfile:
             structure_reader = csv.reader(csvfile, delimiter=';', quotechar="|")
             for i, row in enumerate(structure_reader):
                 # print(row)

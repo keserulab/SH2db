@@ -3,7 +3,13 @@
 {% load static %}
 {% load remove_indextag %}
 
-{% block title %}SH2DB - {{ structure.pdb_code }} structure entry{% endblock %}
+{% block title %}
+    {% if structure.pdb_code %}
+        SH2db - {{ structure.pdb_code }} structure entry
+    {% else %}
+        SH2db - {{ protein.accession }} AlphaFold entry
+    {% endif %}
+{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'home/css/alignment.css' %}" type="text/css" />
@@ -131,7 +137,7 @@
 </div>
 <div class="row">
     <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
-        {% include "alignment_table.html" with segments=segments gns=gns residues=residues checkbox=checkbox%}
+        {% include "alignment_table.html" with segments=segments gns=gns residues=residues checkbox=checkbox %}
     </div>
 </div>
 
