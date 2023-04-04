@@ -79,7 +79,7 @@ class Command(BaseBuild):
                 if aa in ['',' ','-']:
                     continue
                 if self.gns[j]!='':
-                    seg = ProteinSegment.objects.get(name=self.gns[j][:-2])
+                    seg = ProteinSegment.objects.get(name=self.gns[j].split('x')[0])
                 else:
                     seg = self.find_segment(j)
                 gn = self.gns[j]
@@ -108,14 +108,14 @@ class Command(BaseBuild):
         next_seg, prev_seg = False, False
         for gn in self.gns[position:]:
             if gn!='':
-                next_seg = gn[:2]
+                next_seg = gn.split('x')[0].replace("'",'')
                 break
         if not next_seg:
             seg = ProteinSegment.objects.get(name='C-term')
         for i in range(len(self.gns[:position]),0,-1):
             gn = self.gns[i]
             if gn not in ['',' ','-']:
-                prev_seg = gn[:-2]
+                prev_seg = gn.split('x')[0].replace("'",'')
                 break
         if not prev_seg:
             seg = ProteinSegment.objects.get(name='N-term')

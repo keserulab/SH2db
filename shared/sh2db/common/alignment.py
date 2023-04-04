@@ -39,6 +39,9 @@ class Alignment():
                     segs_to_keep.append(seg)
         for seg in list(gns.keys()-segs_to_keep):
             del gns[seg]
+        for seg, val in gns.items():
+            if seg.slug!='bBbC':
+                gns[seg] = sorted(val)
         print('gns check', datetime.now()-start)
         gns_out = []
         for seg, gns_list in gns.items():
@@ -46,15 +49,15 @@ class Alignment():
                 mod_gns_list = []
                 for i in gns_list:
                     if i!='':
-                        gns_out.append(i[-2:])
-                        mod_gns_list.append(int(i[-2:]))
+                        gns_out.append(i.split('x')[1])
+                        mod_gns_list.append(int(i.split('x')[1]))
                     else:
                         gns_out.append('')
                         mod_gns_list.append('')
                 gns_list = mod_gns_list
             elif gns_list[0]!='':
-                gns_list = [int(i[-2:]) for i in gns_list]
-                gns_out += [str(i) for i in sorted(gns_list)]
+                gns_list = [int(i.split('x')[1]) for i in gns_list]
+                gns_out += [str(i) for i in gns_list]
             else:
                 gns_out += gns_list
             segments[seg] = len(gns_list)

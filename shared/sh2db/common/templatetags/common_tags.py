@@ -14,7 +14,7 @@ def authors_short( objs ):
 @register.filter
 def short_gn( obj ):
 	if obj!='':
-		return '.'+obj
+		return 'x'+obj
 	else:
 		return ''
 

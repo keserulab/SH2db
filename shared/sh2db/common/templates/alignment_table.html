@@ -110,8 +110,14 @@
 
                     {% for res in domain_residues|slice:"2:" %}
                         {% if res.amino_acid %}
-                        <td class='residue res-color-{{res.amino_acid}} res_{{ forloop.counter }}' title='{{res}}
+                            {% if res.generic_number %}
+                            <td class='residue res-color-{{res.amino_acid}} res_{{ forloop.counter }}' title='{{res}}
+{{res.amino_acid_three_letter}}
+{{res.generic_number.label}}'>{{ res.amino_acid }}</td>
+                            {% else %}
+                            <td class='residue res-color-{{res.amino_acid}} res_{{ forloop.counter }}' title='{{res}}
 {{res.amino_acid_three_letter}}'>{{ res.amino_acid }}</td>
+                            {% endif %}
                         {% else %}
                         <td class='residue res_{{ forloop.counter }}'>-</td>
                         {% endif %}
