@@ -71,6 +71,26 @@
   display: none;
 }
 
+.white-bg {
+  background-color: white;
+}
+
+.fixed_column1 {
+  
+}
+
+.fixed_column2 {
+  
+}
+
+.fixed_column3 {
+  
+}
+
+.sheinerman {
+  font-weight: bold;
+  color: red;
+}
 /*#alignment_table thead tr th {
     position: -webkit-sticky;
     position: sticky;

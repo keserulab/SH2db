@@ -17,3 +17,7 @@ def short_gn( obj ):
 		return '.'+obj
 	else:
 		return ''
+
+@register.filter
+def index( obj, index ):
+	return obj[index]

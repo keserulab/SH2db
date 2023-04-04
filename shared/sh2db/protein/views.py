@@ -32,11 +32,12 @@ def protein(request, name):
     structuredomains = StructureDomain.objects.filter(domain__isoform__protein=protein)
 
     alignment = Alignment(domains)
-    segments, gns, residues = alignment.align_domain_residues()
+    segments, gns, residues, sheinerman = alignment.align_domain_residues()
 
     structures = []
     for s in structuredomains:
         if s.chain.structure not in structures:
             structures.append(s.chain.structure)
 
-    return render(request, 'protein.html', {'domains' : domains,  'structures': structures, 'protein': protein, 'fullname': fullname, 'residues': residues, 'segments': segments, 'gns': gns})
+    return render(request, 'protein.html', {'domains' : domains,  'structures': structures, 'protein': protein, 'fullname': fullname, 
+                                            'residues': residues, 'segments': segments, 'gns': gns, 'sheinerman': sheinerman})

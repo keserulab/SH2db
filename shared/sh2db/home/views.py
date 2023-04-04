@@ -26,14 +26,14 @@ def search(request):
 
     proteinsegments = ProteinSegment.objects.all()
     residuegenericnumbers = ResidueGenericNumber.objects.all()
-    residues = Residue.objects.filter(domain__in=domains)
+    residues = Residue.objects.filter(domain__in=domains).prefetch_related('domain', 'protein_segment', 'generic_number')
 
     alignment = Alignment(domains)
-    segments, gns, residues = alignment.align_domain_residues()
+    segments, gns, residues, sheinerman = alignment.align_domain_residues()
 
     return render(request, 'search.html', { 'domains': domains,
                                             'proteinsegments': proteinsegments, 'residuegenericnumbers': residuegenericnumbers, 'residues': residues,
-                                            'gns': gns, 'segments': segments, 'checkbox': True, 'filter':True})
+                                            'gns': gns, 'segments': segments, 'checkbox': True, 'filter': True, 'alphafold': True, 'sheinerman': sheinerman})
     
 
 def browse(request):
@@ -179,3 +179,6 @@ def charts(request):
 
 def about(request):
     return render(request, 'about.html')
+
+def documentation(request):
+    return render(request, 'documentation.html')

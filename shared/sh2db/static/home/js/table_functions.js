@@ -178,7 +178,12 @@ function structure_download () {
         }
         else {
             $(".structure.alt_selected").each(function() {
-                structures.push($(":nth-child(3)", this).text());
+                if ($(this).hasClass('alphafold')) {
+                    structures.push($(":nth-child(2)", this).text()+'_'+$(":nth-child(3)", this).text().slice(-1));
+                }
+                else {
+                    structures.push($(":nth-child(3)", this).text());
+                }
             });
             // StructureDownload(structures.join(','));
             window.location.href = '/structure/download?ids='+structures.join(",");
@@ -232,11 +237,16 @@ function pymol_download_from_search () {
             });
 
             $(".structure :checkbox:checked").each(function() {
-                structures.push( $(this).parent().parent().children().eq(2).text() );
+                if($(this).parent().parent().hasClass('alphafold')) {
+                    structures.push($(this).parent().parent().children().eq(1).text()+'_'+$(this).parent().parent().children().eq(2).text().slice(-1));
+                }
+                else {
+                    structures.push($(this).parent().parent().children().eq(2).text() );
+                }
 
                 $.each(column_indices, function(key,value) {
                     if( $(this).parent().parent().children().eq(value).attr('title') ) {
-                        residues.push( $(this).parent().parent().children().eq(value).attr('title').replace(/[^0-9]/gi, '') );
+                        residues.push($(this).parent().parent().children().eq(value).attr('title').replace(/[^0-9]/gi, '') );
                     }
 
                     else {
@@ -285,8 +295,8 @@ function run_filter () {
     $(".data-row").addClass("hidden");
     var rows_to_show = [];
     $(".data-row").each(function (i, j) {
-        if ($("#structure_toggle_button").hasClass("left_position") && $(j).hasClass("structure")) {
-            return;       
+        if ($("#structure_toggle_button").hasClass("left_position") && $(j).hasClass("pdb")) {
+            return;
         }
         var show = true;
         for (var [key, val] of Object.entries(selected_filters)) {
@@ -318,4 +328,23 @@ function fill_filter (td_class, filter_id) {
     $(options).each(function (key, val) {
         $(filter_id).append(`<option value="${val}">${val}</option>`);
     });
+}
+
+function sheinerman_button () {
+    $("#sheinerman_button").click(function() {
+        if (!$(this).hasClass("active")) {
+            $(this).addClass("active");
+            $(this).text("Unselect Sheinerman residues");
+            var checkbox_status = true;
+        }
+        else {
+            $(this).removeClass("active");
+            $(this).text("Select Sheinerman residues");
+            var checkbox_status = false;
+        }
+        
+        $('.sheinerman').each(function (key, val) {
+            $(".residue_checkbox").find("input").eq($(val).index()-3).prop("checked", checkbox_status)
+        })
+    })
 }

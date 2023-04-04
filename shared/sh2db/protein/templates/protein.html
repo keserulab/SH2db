@@ -3,7 +3,7 @@
 {% load common_tags %}
 
 
-{% block title %}SH2DB - {{ protein.name }} protein entry{% endblock %}
+{% block title %}SH2db - {{ protein.name }} protein entry{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'home/css/jquery.dataTables.min.css' %}" type="text/css" />
@@ -112,6 +112,7 @@
 <script src="{% static 'home/js/jquery.dataTables.columnFilter.js' %}"> </script>
 <script src="{% static 'home/js/jquery.dataTables.yadcf.js' %}"> </script>
 <script src="{% static 'home/js/select2.js' %}"> </script>
+<script src="{% static 'home/js/table_functions.js' %}"> </script>
 <script>
     $(document).ready( function () {
         var oTable = $("#structureTable").DataTable({
@@ -242,7 +243,7 @@
             cumulative_filtering: false
         });
 
-        oTable.columns.adjust()
+        oTable.columns.adjust();
     } );
 </script>
 {% endblock %}

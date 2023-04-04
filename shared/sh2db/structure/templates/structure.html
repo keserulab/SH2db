@@ -3,7 +3,13 @@
 {% load static %}
 {% load remove_indextag %}
 
-{% block title %}SH2DB - {{ structure.pdb_code }} structure entry{% endblock %}
+{% block title %}
+    {% if structure.pdb_code %}
+        SH2db - {{ structure.pdb_code }} structure entry
+    {% else %}
+        SH2db - {{ protein.accession }} AlphaFold entry
+    {% endif %}
+{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'home/css/alignment.css' %}" type="text/css" />
@@ -115,7 +121,7 @@
     {% endif %} -->
 </div>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-10">
         <div class="btn-group" role="group" aria-label="Basic example">
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="alignment_download_button"><span class="glyphicon glyphicon-download-alt"></span> Alignment</button>
@@ -126,12 +132,15 @@
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="pymol_download_button"><span class="glyphicon glyphicon-download-alt"></span> Pymol session</button>
             </div>
+            <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="sheinerman_button">Select Sheinerman residues</button>
+            </div>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12" style='padding-top: 0px; font-size: 12px; white-space: nowrap; width:100%; overflow-y:hidden; display:inline-block; width:100%;'>
-        {% include "alignment_table.html" with segments=segments gns=gns residues=residues checkbox=checkbox%}
+        {% include "alignment_table.html" with segments=segments gns=gns residues=residues checkbox=checkbox %}
     </div>
 </div>
 
@@ -168,6 +177,7 @@
             alignment_download();
             structure_download();
             pymol_download_from_search();
+            sheinerman_button();
             if('{{structure.pdb_code}}'!=="None") {
                 mutation_symbols("#alignment_table", "N");
                 mutation_symbols("#alignment_table", "C");
