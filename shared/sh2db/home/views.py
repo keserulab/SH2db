@@ -91,7 +91,7 @@ def get_csv(request, x, y):
     elif y=='structure':
         if x=='no_sh2':
             lookup_string = {'no_sh2': 'chain__structure'}[x]
-            lookup = StructureDomain.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+            lookup = StructureDomain.objects.filter(chain__structure__pdb_code__isnull=False).values(lookup_string).annotate(count_items=Count('id'))
 
             counts={}
             for row in lookup:
@@ -117,20 +117,21 @@ def get_csv(request, x, y):
             lookup_string = {'year': 'publication__year',
                             'family': 'protein__family__name',
                             'species': 'protein__species__latin_name'}[x]
-            lookup = Structure.objects.all().values(lookup_string).order_by(lookup_string).annotate(count_items=Count('id'))
+
+            lookup = Structure.objects.filter(pdb_code__isnull=False, publication__isnull=False).values(lookup_string).order_by(lookup_string).annotate(count_items=Count('id'))
 
         headerline.append('count')
     elif y=='structuredomain':
         lookup_string = {'family': 'domain__parent__isoform__protein__family__name',
                                 'year': 'chain__structure__publication__year',
                                 'species': 'domain__parent__isoform__protein__species__latin_name'}[x]
-        lookup = StructureDomain.objects.all().values(lookup_string).order_by(lookup_string).annotate(count_items=Count('id'))
+        lookup = StructureDomain.objects.filter(chain__structure__pdb_code__isnull=False).values(lookup_string).order_by(lookup_string).annotate(count_items=Count('id'))
 
         headerline.append('count')
     elif y=='publication':
         if x=='no_sh2':
             lookup_string = {'no_sh2': 'chain__structure__publication'}[x]
-            lookup = StructureDomain.objects.all().values(lookup_string).annotate(count_items=Count('id'))
+            lookup = StructureDomain.objects.filter(chain__structure__pdb_code__isnull=False).values(lookup_string).annotate(count_items=Count('id'))
 
             counts={}
             for row in lookup:
