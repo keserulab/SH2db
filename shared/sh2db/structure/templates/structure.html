@@ -121,7 +121,7 @@
     {% endif %} -->
 </div>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-10">
         <div class="btn-group" role="group" aria-label="Basic example">
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="alignment_download_button"><span class="glyphicon glyphicon-download-alt"></span> Alignment</button>
@@ -131,6 +131,9 @@
             </div>
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="pymol_download_button"><span class="glyphicon glyphicon-download-alt"></span> Pymol session</button>
+            </div>
+            <div style='display:inline; margin-left: 10px;'>
+                <button  type="button" class="btn btn-primary" id="sheinerman_button">Select Sheinerman residues</button>
             </div>
         </div>
     </div>
@@ -174,6 +177,7 @@
             alignment_download();
             structure_download();
             pymol_download_from_search();
+            sheinerman_button();
             if('{{structure.pdb_code}}'!=="None") {
                 mutation_symbols("#alignment_table", "N");
                 mutation_symbols("#alignment_table", "C");

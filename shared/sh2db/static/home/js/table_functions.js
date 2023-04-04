@@ -332,9 +332,19 @@ function fill_filter (td_class, filter_id) {
 
 function sheinerman_button () {
     $("#sheinerman_button").click(function() {
+        if (!$(this).hasClass("active")) {
+            $(this).addClass("active");
+            $(this).text("Unselect Sheinerman residues");
+            var checkbox_status = true;
+        }
+        else {
+            $(this).removeClass("active");
+            $(this).text("Select Sheinerman residues");
+            var checkbox_status = false;
+        }
+        
         $('.sheinerman').each(function (key, val) {
-            console.log($(val).parent());
-            console.log($($(val).parent()).index($(val)));
+            $(".residue_checkbox").find("input").eq($(val).index()-3).prop("checked", checkbox_status)
         })
     })
 }
