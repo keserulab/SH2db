@@ -246,7 +246,7 @@ function pymol_download_from_search () {
 
                 $.each(column_indices, function(key,value) {
                     if( $(this).parent().parent().children().eq(value).attr('title') ) {
-                        residues.push($(this).parent().parent().children().eq(value).attr('title').replace(/[^0-9]/gi, '') );
+                        residues.push($(this).parent().parent().children().eq(value).attr('title').split('\n')[0].replace(/[^0-9]/gi, '') );
                     }
 
                     else {

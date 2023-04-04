@@ -22,18 +22,20 @@ import os
 def pymoldownload(request):
     [os.remove(i) for i in os.listdir() if i.startswith('SH2db_pymol_session')]
     structures = request.GET['ids'].split(',')
-
     domains = Domain.objects.filter(name__in=structures)
-
-    structure_domains = [i.structure_domain.all() for i in domains]#structure_domains + af_domains
+    domains_list = []
+    for s in structures:
+        domains_list.append(domains.get(name=s))
+    structure_domains = [i.structure_domain.all() for i in domains_list]#structure_domains + af_domains
+    
     residues = request.GET['residues']
 
     pdbnames=[]
     for structure_domain in structure_domains:
         if not structure_domain[0].domain.parent:
-            pdbname = structure_domain[0].domain.isoform.protein.accession+'-AF-'+structure_domain[0].domain.domain_type.slug+'.pdb'
+            pdbname = structure_domain[0].domain.isoform.protein.name+'_'+structure_domain[0].domain.isoform.protein.accession+'_AF_'+structure_domain[0].domain.domain_type.slug+'.pdb'
         else:
-            pdbname = structure_domain[0].domain.name+'.pdb'
+            pdbname = structure_domain[0].domain.isoform.protein.name+'_'+structure_domain[0].domain.name+'.pdb'
         with open(pdbname, 'w') as f:
             f.write(structure_domain[0].pdbdata.pdb)
         pdbnames.append(pdbname)
