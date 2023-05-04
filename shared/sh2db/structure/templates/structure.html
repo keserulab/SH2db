@@ -132,6 +132,9 @@
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="pymol_download_button"><span class="glyphicon glyphicon-download-alt"></span> Pymol session</button>
             </div>
+            <div style='display:inline;'>
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" style="cursor:pointer;font-size:20px;" title="Please note that you may need a license for Pymol in order to open the Pymol session files. The fully featured Pymol suite is maintained and distributed by Schrödinger at https://pymol.org/2/. Open-source alternatives with limited functionalities are available from Sourceforge and Conda-forge."></span>
+            </div>
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="sheinerman_button">Select Sheinerman residues</button>
             </div>
@@ -153,7 +156,7 @@
             stage = new NGL.Stage("viewport", { backgroundColor: "white" } );
             var stringBlob = new Blob( [ `'{{structuredomains.0.pdbdata.pdb}}'` ], { type: 'text/plain'} );
             var file = new File([stringBlob], "something.pdb");
-            
+            $('[data-toggle="tooltip"]').tooltip();
             // if ('{{ alphafold }}'!=='False') {
             //     var color_residues = JSON.parse('{{color_residues|safe}}');
             //     // color_residues.push(["darkorchid","*"])
@@ -182,6 +185,8 @@
                 mutation_symbols("#alignment_table", "N");
                 mutation_symbols("#alignment_table", "C");
             }
+            $("#alignment_table").css('display', 'block');
+
         });
     </script>
 {% endblock %}

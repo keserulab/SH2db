@@ -26,7 +26,7 @@ def search(request):
 
     proteinsegments = ProteinSegment.objects.all()
     residuegenericnumbers = ResidueGenericNumber.objects.all()
-    residues = Residue.objects.filter(domain__in=domains).prefetch_related('domain', 'protein_segment', 'generic_number')
+    residues = Residue.objects.filter(domain__in=domains).select_related('domain', 'protein_segment', 'generic_number')
 
     alignment = Alignment(domains)
     segments, gns, residues, sheinerman = alignment.align_domain_residues()
