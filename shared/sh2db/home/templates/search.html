@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-14">
         <div class="btn-group" role="group" aria-label="Basic example">
             <div style='display:inline; vertical-align:middle;'>
             	<label class="switch">
@@ -29,13 +29,25 @@
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="pymol_download_button"><span class="glyphicon glyphicon-download-alt"></span> Pymol session</button>
             </div>
+            <div style='display:inline;'>
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" style="cursor:pointer;font-size:20px;" title="Please note that you may need a license for Pymol in order to open the Pymol session files. The fully featured Pymol suite is maintained and distributed by Schrödinger at https://pymol.org/2/. Open-source alternatives with limited functionalities are available from Sourceforge and Conda-forge."></span>
+            </div>
             <div style='display:inline; margin-left: 10px;'>
                 <button  type="button" class="btn btn-primary" id="sheinerman_button">Select Sheinerman residues</button>
+            </div>
+            <div id='table_numbers_div' style='display:none; margin-left: 10px;'>
+                <span class='red'>Total: </span><span id='num_total' class='red'></span> (<span id='num_total_wt' class='red'></span>) / 
+                <span class='blue'>Visible: </span><span id='num_visible' class='blue'></span> (<span id='num_visible_wt' class='blue'></span>) / 
+                <span class='green'>Selected: </span><span id='num_selected' class='green'></span> (<span id='num_selected_wt' class='green'></span>)
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" style="cursor:pointer;font-size:20px;" title="For every category, the first number represents the sum of wild type sequence based alphafold models and experimental structures; in parentheses, only the former."></span>
             </div>
         </div>
     </div>
 </div>
-       
+
+<div style="padding-top: 0px; font-size: 15px; white-space: nowrap;" id="loading_div">
+    <br><br><br><br><h3 style='text-align:center;'><b>Loading...</b></h3>
+</div>
 
 {% include "alignment_table.html" with segments=segments gns=gns residues=residues checkbox=checkbox filter=filter %}
 
@@ -48,20 +60,30 @@
 <script src="{% static 'home/js/table_functions.js' %}"></script>
 <script>
     document.getElementById("navbar.search").classList.add('active');
-    // $("#alignment_table").hide();
+    
     // $("body").css("cursor", "progress");
+
     $(document).ready(function() {
-        // $("#alignment_table").parent().addClass("escape-container");
         $(".pdb").addClass("hidden");
+        $("#table_container").css("position","absolute");
+        $("#table_container").css("left","5px");
+        
+        // $("#alignment_table").hide();
+        // $("#table_numbers_div").hide();
+        
         table_filter();
         checkbox_selection();
         alignment_download();
         structure_download();
         sheinerman_button();
+        table_numbers();
         pymol_download_from_search();
+        
+        $('[data-toggle="tooltip"]').tooltip();
+
         $("#structure_toggle_button").click(function() {
-            $('body').css('cursor','progress');
-            
+            $("#alignment_table").hide();
+            $("#loading_div").show();
             if ($(this).hasClass("left_position")) {
                 $("tbody").children(".child").removeClass("hidden")
                 $(this).addClass("right_position");
@@ -72,15 +94,86 @@
                 $(this).addClass("left_position");
                 $(this).removeClass("right_position");
             }
-            run_filter();
-            $('body').css('cursor','default');
+            // escape callstack event with setTimeout
+            setTimeout(function() {
+                run_filter();
+                update_filter_options();
+                $("#loading_div").hide();
+                $("#alignment_table").show();
+            }, 0);
         });
-        // $("#alignment_table").show();
+        console.log($("#table_numbers_div"))
+        $("#loading_div").hide();
+        $("#alignment_table").css('display', 'block');
+        $("#table_numbers_div").css('display', 'inline');
+
         document.getElementById("table_container").addEventListener("scroll",function(){
             var translate = "translate(0,"+this.scrollTop+"px)";
             this.querySelector("thead").style.transform = translate;
         });
-        // $("body").css("cursor", "default");
+        $(":checkbox").change(function() {
+           table_numbers(); 
+        });
+        update_filter_options();
+
+        // OVERLAY
+        var toggle_enabled = true;
+        $("#toggle_fixed_btn").click(function() {
+            if (toggle_enabled) {
+                toggle_enabled = false;
+                $("#overlay").hide();
+                $("#toggle_fixed_btn").attr("value","Enable fixed columns");
+                $("#toggle_fixed_btn").addClass("clicked_button");
+            } else {
+                toggle_enabled = true;
+                $("#scroll_body").scroll();
+                $("#toggle_fixed_btn").attr("value","Disable fixed columns");
+                $("#toggle_fixed_btn").removeClass("clicked_button");
+            }
+        });
+
+        $("#table_container").append("<div id=overlay><table id='overlay_table' class='row-border text-center compact dataTable no-footer text-nowrap'><tbody></tbody></table></div>");
+        $('#overlay').css('top',document.getElementById('alignment_table_body').offsetTop);
+        function create_overlay() {
+            // This function fires upon filtering, to update what rows to show as an overlay
+            $("#overlay_table tbody tr").remove();
+            var $target = $("#overlay_table tbody");
+            $("#alignment_table tbody tr").each(function() {
+                var $tds = $(this).children(),
+                    $row = $("<tr class='"+$(this).attr('class')+"'></tr>");
+                // $row.append($tds.eq(0).clone()).append($tds.eq(1).clone()).appendTo($target);
+                $row.append($tds.eq(1).clone(true)).append($tds.eq(2).clone(true)).appendTo($target);
+                $row.height($(this).height());
+            });
+            $("#overlay_table .border-right").removeClass("border-right");
+        }
+
+        // Function that detects filtering events
+        $("#alignment_table").change(function (e,oSettings) {
+            create_overlay();
+        });
+        // console.log($(".structure.alphafold.data-row.C").top())
+        create_overlay();
+        $("#overlay").hide();
+
+        var left = 0;
+        var old_left = 0;
+        $("#table_container").scroll(function(){
+            // If user scrolls and it"s >100px from left, then attach fixed columns overlay
+            left = $("#table_container").scrollLeft();
+            if (left !== old_left) {
+              $("#overlay").hide();
+            }
+            old_left = left;
+
+            if (left>100 && toggle_enabled) {
+                $("#overlay").css({ left: left+"px" });
+                if ($("#overlay").is(":hidden")) {
+                  $("#overlay").show();
+                }
+            }
+        });
+        // END OF OVERLAY
     });
 </script>
 {% endblock %}

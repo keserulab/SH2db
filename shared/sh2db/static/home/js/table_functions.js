@@ -284,6 +284,23 @@ function table_filter () {
 
 }
 
+function remove_filter_options () {
+    $("#protein_filter").find("option").remove();
+    $("#domain_filter").find("option").remove();
+    for (var i=1; i<$(".data-row:first > .residue").length+1; i++) {
+        $("#filter_"+i.toString()).find("option").remove();
+    }
+}
+
+function update_filter_options () {
+    remove_filter_options();
+    fill_filter(".protein", "#protein_filter", true);
+    fill_filter(".domain", "#domain_filter", true);
+    for (var i=1; i<$(".data-row:first > .residue").length+1; i++) {
+        fill_filter(".res_"+i.toString(), "#filter_"+i.toString(), true)
+    }
+}
+
 function run_filter () {
     var selected_filters = {};
     $(".form-select").each(function (key, val) {
@@ -315,13 +332,21 @@ function run_filter () {
             $(j).removeClass("hidden");
         }
     })
+    table_numbers();
 }
 
-function fill_filter (td_class, filter_id) {
+function fill_filter (td_class, filter_id, only_visible=false) {
     var options = [];
     $(td_class).each(function (key, val) {
-        if (!options.includes(val.innerText)) {
-            options.push(val.innerText);
+        if (only_visible) {
+            if (!$(val).parent().hasClass('hidden') && !options.includes(val.innerText)) {
+                options.push(val.innerText);
+            }
+        }
+        else {
+            if (!options.includes(val.innerText)) {
+                options.push(val.innerText);
+            }
         }
     });
     $(filter_id).append(`<option value=""></option>`)
@@ -347,4 +372,20 @@ function sheinerman_button () {
             $(".residue_checkbox").find("input").eq($(val).index()-3).prop("checked", checkbox_status)
         })
     })
+}
+
+function table_numbers () {
+    var total = $('#alignment_table').find('tbody tr').length;
+    var total_wt = $('#alignment_table').find('.alphafold').length;
+    var visible = total-$('#alignment_table').find('tr.hidden').length;
+    var visible_wt = total_wt-$('#alignment_table').find('.alphafold.hidden').length;
+    var selected = $('#alignment_table').find('.alt_selected').length;
+    var selected_wt = $('#alignment_table').find('.alt_selected.alphafold').length;
+    $('#num_total').text(total);
+    $('#num_total_wt').text(total_wt);
+    $('#num_visible').text(visible);
+    $('#num_visible_wt').text(visible_wt);
+    $('#num_selected').text(selected);
+    $('#num_selected_wt').text(selected_wt);
+    
 }
