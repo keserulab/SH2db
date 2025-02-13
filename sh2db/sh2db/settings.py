@@ -89,7 +89,6 @@ DATABASES = {
         'USER': 'sh2db',
         'PASSWORD': 'sh2db',
         'HOST': 'localhost',
-        'PORT': '5433',
     }
 }
 
