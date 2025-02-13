@@ -24,9 +24,9 @@ DATA_DIR = '/SH2/data/'
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = 'FALSE'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -85,10 +85,11 @@ WSGI_APPLICATION = 'sh2db.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'SH2',
-        'USER': 'SH2',
-        'PASSWORD': 'SH2',
+        'NAME': 'sh2db',
+        'USER': 'sh2db',
+        'PASSWORD': 'sh2db',
         'HOST': 'localhost',
+        'PORT': '5433',
     }
 }
 
